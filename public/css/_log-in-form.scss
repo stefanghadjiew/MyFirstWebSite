@@ -134,3 +134,18 @@
         width: 100%;
        }
 }
+
+
+span {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#form_register {
+    opacity: 0;
+    pointer-events: none;
+
+    & p {
+        margin-bottom:2.5vh;
+    } 
+}

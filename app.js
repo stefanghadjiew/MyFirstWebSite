@@ -9,7 +9,7 @@ const { error }  = require("console");
 
         
 app.use(express.static('e:/web-projects'))
-app.use(express.json()) ;
+app.use(express.json());
 
 
 
@@ -18,14 +18,28 @@ app.get('/' ,(req,res) =>{
 }); 
 
 
+app.post('/users/login', (req,res) => {
+        User.findOne({email : req.body.email}, (err,user) => {
+                
+                if (!user || !bcrypt.compareSync(req.body.password,user.password)) {
+                        res.status(401).send()
+                } else {
+                        res.status(201).send()
+                }
+
+                 
+        })
+                
+})
 
 
 app.post('/users/register',(req,res) => {
-        let user = new User(req.body)
         let hashPass = bcrypt.hashSync(req.body.password, 10);
         req.body.password = hashPass;
+        let user = new User(req.body)
         user.save((err) => {
                 (err) ? res.status(500).send() : res.status(201).send();
+                console.log(hashPass)
       })
 })
 

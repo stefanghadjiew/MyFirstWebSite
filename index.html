@@ -299,9 +299,16 @@
                 <img src="/MyFirstWebSite/public/images/trueLigi.jpg" alt="">
             </div>
 
+            <form  class="log-in" id="form_log_in"> 
+                <i class="envelope outline icon"></i><input type="email" name="email" id="email_log" placeholder="e-mail" required><br>
+                <i class="unlock icon"></i><input type="password" placeholder="password" id="password_log" name="password" required><br>
+                <button id="register"><input type="submit" value="">Login</button>
+                <p>Dont have an account? <span id="register_span">Register</span></p>
+            </form>
             
             <!--  <form  class="log-in" action="http://localhost:3000" method="POSt" > --> 
-                <form  class="log-in" id="form"> 
+            <form  class="log-in" id="form_register">
+                <p>Have an account? <span id="log_in">Login</span></p>
                 <i class="user outline icon"></i><input type="text" placeholder="First Name" id= "firstName" name= "firstName" required><br>
                 <i class="user outline icon"></i><input type="text" placeholder="Last Name" id="lastName" name="lastName" required><br>
                 <i class="envelope outline icon"></i><input type="email" name="email" id="email" placeholder="e-mail" required><br>

@@ -9,6 +9,8 @@
 
 
 
+
+
 //CREATE OBSERVER AND ADD/REMOVE ANIMATION-CLASSES
 function createObserverAndAnimate (obj ,classname) {
     const observer = new IntersectionObserver(function(entries) {
@@ -102,7 +104,8 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
             logInDiv.append(div)
         },1000)
     })
-}
+} 
+
 
 
 //LOG-IN BTN
@@ -125,20 +128,20 @@ function close (btn,div,addClass,removeClass){
     body.classList.remove("hide-body")
     div.classList.remove("animate__animated",removeClass)
     div.classList.add("animate__animated",addClass)
-    logInDiv.addEventListener("animationend",returnToOriginalState) 
+    logInDiv.addEventListener("animationend",returnToOriginalState)
     })
 
     function returnToOriginalState() {
         this.classList.remove("log-in-div-show")
         this.removeChild(div)
-        this.removeEventListener("animationend",returnToOriginalState) 
+        this.removeEventListener("animationend",returnToOriginalState)
     } 
-   
 }
 
 
 close(closeBtnSignUp,signUpDiv,"animate__fadeOutRight","animate__fadeInRight")
 
+ 
 
 //CLOSE SEARCH-BTN
 const closeBtnSearch = document.querySelector('[data-close-btn-search]')
@@ -191,31 +194,55 @@ backToHomePage3.forEach(btn => {
 })
 
 
+const formLog = document.getElementById('form_log_in');
+const formReg = document.getElementById('form_register');
+
+register_span.addEventListener('click', swapLogRegister);
+  
+function swapLogRegister () {
+    formLog.classList.remove("animate__animated", "animate__fadeInUp")
+    formLog.classList.add("animate__animated", "animate__fadeOutDown")
+    formLog.style.pointerEvents = "none";
+    formReg.classList.remove("animate__animated","animate__fadeOutUp")
+    formReg.classList.add("animate__animated","animate__fadeInDown")
+    formReg.style.pointerEvents = "auto";
+}
+
+log_in.addEventListener ('click', swapRegisterLog);
+
+function swapRegisterLog () {
+    formLog.classList.remove("animate__animated", "animate__fadeOutDown")
+    formLog.classList.add("animate__animated", "animate__fadeInUp")
+    formLog.style.pointerEvents = "auto";
+    formReg.classList.remove("animate__animated","animate__fadeInDown")
+    formReg.classList.add("animate__animated","animate__fadeOutUp")
+    formReg.style.pointerEvents = "none" ; 
+}
 /* ===================================================
-   HANDLE USER /LOGIN,SIGN UP,AUTHENTICATE
+   HANDLE USER /LOGIN,REGISTER,AUTHENTICATE
    =================================================== */
 
  //CREATE USER OBJ WITH FORM DATA
-const form = document.getElementById('form')
+
 const firstName = document.getElementById('firstName') 
 const lastName = document.getElementById('lastName') 
 const email = document.getElementById('email')   
 const password = document.getElementById('password')
 
 
- function User(firstName,lastName,email,password) {
+ function UserReg(firstName,lastName,email,password) {
     this.firstName = firstName.value,
     this.lastName = lastName.value,
     this.email =email.value,
     this.password = password.value
 }  
 
-//SEND POST REQUEST WITH USER INFO
+//SEND REGISTRATION POST REQUEST WITH USER INFO
 
-form.addEventListener('submit', (e) => {
+formReg.addEventListener('submit', (e) => {
     e.preventDefault();
     const url = "http://localhost:3000/users/register"
-    let userInput = new User(firstName,lastName,email,password ) ; 
+    let userInput = new UserReg(firstName,lastName,email,password ) ; 
     
     fetch(url, {
         method : 'POST',
@@ -230,6 +257,7 @@ form.addEventListener('submit', (e) => {
         }
         if (response.status === 201){
             alert("Registration succesful!")
+            
         }
         console.log(response.status)
         response.json().then(data => {
@@ -238,8 +266,36 @@ form.addEventListener('submit', (e) => {
        
     })
  }) ;
-    
 
+ 
+const emailLog = document.getElementById('email_log')
+const passwordLog = document.getElementById('password_log')
+
+function UserLog(email,password){
+    this.email = email.value,
+    this.password = password.value
+}
+
+ formLog.addEventListener("submit", (e) => {
+    e.preventDefault()
+    const url = "http://localhost:3000/users/login"
+    let userLog = new UserLog(emailLog,passwordLog)
+    fetch(url, {
+        method : 'POST' ,
+        headers : {
+            'Content-type' :  'application/json; charset=utf-8'
+        },
+        body : JSON.stringify(userLog)
+    })
+    .then(response => {
+       if  (response.status === 401) {
+        alert ("User doesent exist!Please register!")
+       } 
+       if (response.status === 201) {
+           alert ("Welcome!")
+       }
+    })
+})
 
 
 
