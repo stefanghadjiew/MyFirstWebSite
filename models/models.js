@@ -1,12 +1,16 @@
-const   mongoose = require('mongoose')
-        mongoose.connect("mongodb://localhost/MyFirstWebSiteDB" , { useNewUrlParser: true ,useUnifiedTopology: true , useCreateIndex : true })
-        mongoose.Promise = Promise;
+import   mongoose  from 'mongoose'
 
-
+mongoose.connect("mongodb://localhost/MyFirstWebSiteDB" , 
+{ 
+    useNewUrlParser: true ,
+    useUnifiedTopology: true , 
+    useCreateIndex : true 
+})
+       
 const userSchema = new mongoose.Schema({
-    firstName : String,
-    lastName : String,
-    email : { type:String , unique:true},
+    firstName : { type:String,lowercase: true },
+    lastName : { type:String,lowercase: true },
+    email : { type : String , unique : true , lowercase: true},
     password : String,
     created_date : {
         type : Date,
@@ -14,5 +18,9 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("User",userSchema)
+const User = mongoose.model("User",userSchema)
+
+
+export  default User;
+
 

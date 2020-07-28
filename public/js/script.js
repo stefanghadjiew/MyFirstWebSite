@@ -1,19 +1,22 @@
+const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]")
+const logIn = document.querySelector('[data-log-in-btn]')
+
+visitGalleryBtn.forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (window.sessionStorage.length === 0) {
+            alert("Access denied.Please Log In!")
+        } else {
+            alert("Use me !")
+        }
+    })
+})
+
 
 /* ===================================================
-   OBSERVERS
+    INTERSECTION OBSERVERS
    =================================================== */
-
-
-
-
-
-
-
-
-
-//CREATE OBSERVER AND ADD/REMOVE ANIMATION-CLASSES
-function createObserverAndAnimate (obj ,classname) {
-    const observer = new IntersectionObserver(function(entries) {
+   function createObserverAndAnimate (obj ,classname) {
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if(entry.isIntersecting){
                 obj.classList.add("animate__animated",classname)
@@ -81,7 +84,6 @@ createObserverAndAnimate(finalTitle,"animate__heartBeat")
 const h3 = document.querySelector("[data-h3]")
 createObserverAndAnimate(h3,"animate__jackInTheBox")
 
-
 /* ===================================================
    EVENT LISTENERS FOR BUTTONS
    =================================================== */
@@ -95,7 +97,7 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
     function createListener (btn,div,addClass,removeClass) {
         btn.addEventListener("click", () => {
         event.preventDefault()
-        body.classList.add('hide-body')
+        body.classList.toggle('hide-body')
         logInDiv.classList.add("log-in-div-show")
         div.classList.remove("animate__animated",removeClass)
         div.classList.add("animate__animated",addClass)
@@ -125,7 +127,7 @@ const closeBtnSignUp = document.querySelector('[data-close-btn-sign-up]')
 function close (btn,div,addClass,removeClass){
     btn.addEventListener("click", () => {
     event.preventDefault()
-    body.classList.remove("hide-body")
+    body.classList.toggle("hide-body")
     div.classList.remove("animate__animated",removeClass)
     div.classList.add("animate__animated",addClass)
     logInDiv.addEventListener("animationend",returnToOriginalState)
@@ -150,8 +152,8 @@ close(closeBtnSearch,searchDiv,"animate__fadeOutLeft","animate__fadeInLeft")
 
 
 // VISIT MEN GALLERY  -  BTN/FOOTER
-const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]")
-const galleryWrapperDiv = document.querySelector('[data-gallery-wrapper-div]')
+ /* const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]") */
+ const galleryWrapperDiv = document.querySelector('[data-gallery-wrapper-div]')
 
 visitGalleryBtn.forEach(btn => {
     createListener(btn,galleryWrapperDiv,"animate__slideInUp","animate__slideOutDown")
@@ -192,6 +194,9 @@ const backToHomePage3 = document.querySelectorAll('[data-home-page-3]')
 backToHomePage3.forEach(btn => {
     close(btn,aboutUsDiv,"animate__fadeOutDownBig","animate__fadeInUpBig")
 })
+
+
+//SWAP LOG IN/REGISTRATION FORMS 
 
 
 const formLog = document.getElementById('form_log_in');
@@ -243,7 +248,7 @@ formReg.addEventListener('submit', (e) => {
     e.preventDefault();
     const url = "http://localhost:3000/users/register"
     let userInput = new UserReg(firstName,lastName,email,password ) ; 
-    
+
     fetch(url, {
         method : 'POST',
         headers : {
@@ -264,9 +269,11 @@ formReg.addEventListener('submit', (e) => {
         console.log(data)  
         })  
        
-    })
+    }) 
  }) ;
 
+
+//SEND LOG IN POST REQUEST WITH USER INFO
  
 const emailLog = document.getElementById('email_log')
 const passwordLog = document.getElementById('password_log')
@@ -276,7 +283,7 @@ function UserLog(email,password){
     this.password = password.value
 }
 
- formLog.addEventListener("submit", (e) => {
+formLog.addEventListener("submit", (e) => {
     e.preventDefault()
     const url = "http://localhost:3000/users/login"
     let userLog = new UserLog(emailLog,passwordLog)
@@ -290,16 +297,33 @@ function UserLog(email,password){
     .then(response => {
        if  (response.status === 401) {
         alert ("User doesent exist!Please register!")
+        swapLogRegister();
        } 
        if (response.status === 201) {
-           alert ("Welcome!")
-       }
+                response.json().then(userName =>{
+                const changeLoginWithUserName = document.querySelector('[data-log-in-btn]')
+                changeLoginWithUserName.innerHTML = `Logged as ${userName}`
+                sessionStorage.setItem('name', userName);
+                closeClose(signUpDiv,"animate__fadeOutRight","animate__fadeInRight")
+               })
+           }
+           
     })
 })
 
 
-
-function userLogged(){
-
+function closeClose (div,addClass,removeClass){
+    body.classList.toggle("hide-body")
+    div.classList.remove("animate__animated",removeClass)
+    div.classList.add("animate__animated",addClass)
+    logInDiv.addEventListener("animationend",returnToOriginalState)
+    
+    function returnToOriginalState() {
+        this.classList.remove("log-in-div-show")
+        this.removeChild(div)
+        this.removeEventListener("animationend",returnToOriginalState)
+    } 
 }
+
+
 

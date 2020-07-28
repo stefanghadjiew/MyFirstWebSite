@@ -1,50 +1,40 @@
-const   express  = require("express");
-        app      = express();
-        path     = require('path');
-        mongoose = require('mongoose');
-        bcrypt   = require('bcryptjs')
-        port     =  3000;
-const   User     = require("./models/models");       
-const { error }  = require("console");
+import  express  from "express";
+import  sessions from 'client-sessions';
+import router from './routes.js'
+    
 
+const app  = express();
+const port =  3000;
         
-app.use(express.static('e:/web-projects'))
+
+app.use(express.static('e:/web-projects/'))
 app.use(express.json());
 
+app.use(sessions({
+        cookieName : "mySession",
+        secret : '1_2_3stefanGhadjiew1_2_3',
+        duration : 1 * 60 * 1000,
+        cookie : {
+                path : '/users/login',
+                httpOnly : true,
+                ephemeral : true,
+                secure: false
+        }
+       
+}));
 
+app.use((req,res,next) => {
+        if (req.mySession.seenyou) {
+                res.setHeader('X-Seen-You', 'true')
+        } else {
+                req.mySession.seenyou = true;
+                res.setHeader('X-Seen-You' , 'false')
+        }
+            next();
+})  
 
-app.get('/' ,(req,res) =>{
-        res.sendFile(path.join(__dirname + '/index.html'));
-}); 
-
-
-app.post('/users/login', (req,res) => {
-        User.findOne({email : req.body.email}, (err,user) => {
-                
-                if (!user || !bcrypt.compareSync(req.body.password,user.password)) {
-                        res.status(401).send()
-                } else {
-                        res.status(201).send()
-                }
-
-                 
-        })
-                
-})
-
-
-app.post('/users/register',(req,res) => {
-        let hashPass = bcrypt.hashSync(req.body.password, 10);
-        req.body.password = hashPass;
-        let user = new User(req.body)
-        user.save((err) => {
-                (err) ? res.status(500).send() : res.status(201).send();
-                console.log(hashPass)
-      })
-})
+app.use (router);
 
 
 
-
-
-app.listen(port)
+app.listen(port) 
