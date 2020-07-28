@@ -1,7 +1,7 @@
 const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]")
 const logIn = document.querySelector('[data-log-in-btn]')
 
-visitGalleryBtn.forEach(btn => {
+/* visitGalleryBtn.forEach(btn => {
     btn.addEventListener('click', () => {
         if (window.sessionStorage.length === 0) {
             alert("Access denied.Please Log In!")
@@ -10,7 +10,7 @@ visitGalleryBtn.forEach(btn => {
         }
     })
 })
-
+ */
 
 /* ===================================================
     INTERSECTION OBSERVERS
@@ -97,6 +97,24 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
     function createListener (btn,div,addClass,removeClass) {
         btn.addEventListener("click", () => {
         event.preventDefault()
+        const url = "http://localhost:3000/users/authorized"
+        
+        fetch(url,
+        {
+            method :  'GET',
+            headers : {
+                'Content-type' : 'application/json; charset=utf-8'
+            }
+        })
+        .then(response =>{
+            if (response.status === 401) {
+                alert('Please register to use me !')
+            }
+            if (response.status === 200) {
+                alert ('Feel free to use me!')
+            }
+           
+        })
         body.classList.toggle('hide-body')
         logInDiv.classList.add("log-in-div-show")
         div.classList.remove("animate__animated",removeClass)

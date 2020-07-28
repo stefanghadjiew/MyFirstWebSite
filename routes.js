@@ -1,14 +1,26 @@
-import express from 'express';
-import  User   from "./models/models.js"
-import  bcrypt from 'bcryptjs'; 
+import  express from  'express';
+import  User    from  "./models/models.js"
+import  bcrypt  from  'bcryptjs';
+
 
 const router = express.Router()
 
 
 
 router.get('/' ,(req,res) =>{
-    res.sendFile('e:/web-projects/MyFirstWebSite/index.html');
+    res.sendFile('e:/web-projects/MyFirstWebSite/index.html')
 }); 
+
+
+
+router.get('/users/authorized', (req,res) => {
+    if (!(req.mySession && req.mySession.userId)) {
+        res.status(401).send();
+    } else {
+        res.status(200).send();
+    }
+})
+
 
 
 router.post('/users/login', (req,res) => {

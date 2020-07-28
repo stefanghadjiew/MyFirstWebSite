@@ -1,6 +1,6 @@
-import  express  from "express";
-import  sessions from 'client-sessions';
-import router from './routes.js'
+import  express  from  "express";
+import  sessions from  'client-sessions';
+import  router   from  './routes.js'
     
 
 const app  = express();
@@ -15,7 +15,7 @@ app.use(sessions({
         secret : '1_2_3stefanGhadjiew1_2_3',
         duration : 1 * 60 * 1000,
         cookie : {
-                path : '/users/login',
+                /* path : '/users/login', */
                 httpOnly : true,
                 ephemeral : true,
                 secure: false
