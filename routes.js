@@ -13,8 +13,9 @@ router.get('/' ,(req,res) =>{
 
 
 
-router.get('/users/authorized', (req,res) => {
-    if (!(req.mySession && req.mySession.userId)) {
+router.get('/users/login/authenticated',async (req,res) => {
+    const user =await User.findById(req.Authenticated.userId)
+    if (!(user && req.Authenticated)) {
         res.status(401).send();
     } else {
         res.status(200).send();
@@ -23,19 +24,18 @@ router.get('/users/authorized', (req,res) => {
 
 
 
-router.post('/users/login', (req,res) => {
-    User.findOne({email : req.body.email}, (err,user) => {
-            if (err) {
-                    console.log(err)
-            }
-            if (!user || !bcrypt.compareSync(req.body.password,user.password)) {
-                res.status(401).send()
-            } else {
-               req.mySession.userId = user._id
-               res.status(201).json(user.firstName)
-            }
-    })
-    
+router.post('/users/login', async (req,res) => {
+    try {
+        const user = await User.findOne({email : req.body.email})
+        if (!user || !bcrypt.compareSync(req.body.password,user.password)) {
+            res.status(401).send()
+        } else {
+          req.Authenticated.userId = user._id
+          res.status(201).json(user.firstName)
+        }
+    } catch (err) {
+        console.log(err)
+    }
 })
 
 
@@ -48,6 +48,12 @@ router.post('/users/register',(req,res) => {
     })
 })
 
+
+router.post('users/logout',(req,res) => {
+    req.Authenticated.destroy()
+    res.clearCookie('Authenticated')
+   
+})
 
 
 export default router;
