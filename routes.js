@@ -1,19 +1,23 @@
-import  express from  'express';
-import  User    from  "./models/models.js"
-import  bcrypt  from  'bcryptjs';
+import  express         from  'express';
+import  User            from  "./models/models.js"
+import  bcrypt          from  'bcryptjs';
+import  dotenv          from  'dotenv';
+import  { STATIC_FILE,LOGIN_PATH,REGISTER_PATH,AUTHENTICATED_PATH,LOGOUT_PATH } from './config.js'; 
 
 
+
+dotenv.config()
 const router = express.Router()
 
 
 
 router.get('/' ,(req,res) =>{
-    res.sendFile('e:/web-projects/MyFirstWebSite/index.html')
+    res.sendFile(STATIC_FILE)
 }); 
 
 
 
-router.get('/users/login/authenticated',async (req,res) => {
+router.get(AUTHENTICATED_PATH,async (req,res) => {
     const user =await User.findById(req.Authenticated.userId)
     if (!(user && req.Authenticated)) {
         res.status(401).send();
@@ -24,13 +28,14 @@ router.get('/users/login/authenticated',async (req,res) => {
 
 
 
-router.post('/users/login', async (req,res) => {
+router.post(LOGIN_PATH, async (req,res) => {
     try {
         const user = await User.findOne({email : req.body.email})
         if (!user || !bcrypt.compareSync(req.body.password,user.password)) {
             res.status(401).send()
         } else {
           req.Authenticated.userId = user._id
+          
           res.status(201).json(user.firstName)
         }
     } catch (err) {
@@ -39,7 +44,7 @@ router.post('/users/login', async (req,res) => {
 })
 
 
-router.post('/users/register',(req,res) => {
+router.post(REGISTER_PATH,(req,res) => {
     let hashPass = bcrypt.hashSync(req.body.password, 10);
     req.body.password = hashPass;
     let user = new User(req.body)
@@ -49,11 +54,14 @@ router.post('/users/register',(req,res) => {
 })
 
 
-router.post('users/logout',(req,res) => {
-    req.Authenticated.destroy()
-    res.clearCookie('Authenticated')
+router.post(LOGOUT_PATH,(req,res) => {
+     console.log(req.Authenticated)
+     console.log('Authenticated')
+      res.clearCookie('Authenticated')
+    
    
 })
+
 
 
 export default router;

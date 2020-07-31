@@ -3,8 +3,13 @@ const logIn = document.querySelector('[data-log-in-btn]')
 
 async function logOut() {
     if (logIn.innerHTML !== 'Log In') {
-       const response = await fetch('http://localhost:3000/users/logout',{ method : 'POST'})
-       console.log(response)
+        try {
+            const response = await fetch('http://localhost:3000/users/logout',{ method : 'POST'})
+            console.log(response)
+        } catch (err){
+            console.log(err)
+        }
+       
     }
 }
 

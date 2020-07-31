@@ -1,20 +1,23 @@
 import   mongoose  from 'mongoose'
+import   {MONGO_URI,MONGO_OPTIONS} from '../config.js'
 
-mongoose.connect("mongodb://localhost/MyFirstWebSiteDB" , 
-{ 
-    useNewUrlParser: true ,
-    useUnifiedTopology: true , 
-    useCreateIndex : true 
-})
-       
+
+try {
+    mongoose.connect(MONGO_URI, MONGO_OPTIONS);
+} catch (err) {
+    console.log(err)
+}
+
+
+
 const userSchema = new mongoose.Schema({
-    firstName : { type:String,lowercase: true },
-    lastName : { type:String,lowercase: true },
-    email : { type : String , unique : true , lowercase: true},
-    password : String,
-    created_date : {
-        type : Date,
-        default : Date.now()
+        firstName : { type:String,lowercase: true },
+        lastName : { type:String,lowercase: true },
+        email : { type : String , unique : true , lowercase: true},
+        password : String,
+        created_date : {
+            type : Date,
+            default : Date.now()
     }
 });
 
