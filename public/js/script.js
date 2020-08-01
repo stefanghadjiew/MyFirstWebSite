@@ -1,6 +1,7 @@
 const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]")
 const logIn = document.querySelector('[data-log-in-btn]')
 
+
 async function logOut() {
     if (logIn.innerHTML !== 'Log In') {
         try {
@@ -99,7 +100,7 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
         btn.addEventListener("click", () => {
         event.preventDefault()
         checkIfUserIsAuthenticated()
-        logOut()
+        logOut() 
         body.classList.toggle('hide-body')
         logInDiv.classList.add("log-in-div-show")
         div.classList.remove("animate__animated",removeClass)

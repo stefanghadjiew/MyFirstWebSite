@@ -5,13 +5,13 @@ import  dotenv   from  'dotenv';
 dotenv.config()
 
 export const COOKIE_NAME     = process.env.COOKIE_NAME
-const COOKIE_SECRET   = process.env.COOKIE_SECRET
-const COOKIE_PATH     = process.env.COOKIE_PATH
+const COOKIE_SECRET          = process.env.COOKIE_SECRET
+export const COOKIE_PATH     = process.env.COOKIE_PATH
 
 
-const PORT            = process.env.MONGO_PORT
-const HOST            = process.env.MONGO_HOST
-const DB              = process.env.MONGO_DATABASE
+
+export const HOST  = process.env.MONGO_HOST
+       const DB    = process.env.MONGO_DATABASE
 
 export const MONGO_OPTIONS = {
     useNewUrlParser: true ,
@@ -19,7 +19,7 @@ export const MONGO_OPTIONS = {
     useCreateIndex : true 
 }
 
-export const MONGO_URI    = `mongodb://${HOST}:${PORT}/${DB}`
+export const MONGO_URI    = `mongodb://${HOST}/${DB}`
 
 export const STATIC_ROUTE = process.env.STATIC_ROUTE
 export const STATIC_FILE  = process.env.STATIC_FILE
@@ -29,23 +29,23 @@ export const STATIC_FILE  = process.env.STATIC_FILE
 export const SESSION_OPTIONS = {
         cookieName : COOKIE_NAME ,
         secret     : COOKIE_SECRET,
-        path       : COOKIE_PATH,
-        resave     :false,
-        saveUninitialized: false,
+        duration   : 1 * 60 * 1000,
         cookie     : {  
-                        httpOnly : true, 
-                        maxAge : 60000,
-                        secure: false,
-                        sameSite : true  
+                        path      : COOKIE_PATH,
+                        ephemeral : true,
+                        httpOnly  : true, 
+                        secure    : false,
+                        sameSite  : true  
     }
 }
 
 export const authentication =  (req,res,next) => {
     
-    if (!req.session.userId) {
-        res.setHeader('X-Seen-You', 'false')
+    if (req.Authenticated.seenyou) {
+        res.setHeader('X-Seen-You', 'true')
     }  else {
-        res.setHeader('X-Seen-You' , 'true')
+        req.Authenticated.seenyou = true
+        res.setHeader('X-Seen-You' , 'false')
     }
     next()
 }
