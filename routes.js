@@ -2,7 +2,7 @@ import  express         from  'express';
 import  User            from  "./models/models.js"
 import  bcrypt          from  'bcryptjs';
 import  dotenv          from  'dotenv';
-import  { STATIC_FILE,LOGIN_PATH,REGISTER_PATH,AUTHENTICATED_PATH,LOGOUT_PATH } from './config.js'; 
+import  { STATIC_FILE,LOGIN_PATH,REGISTER_PATH,AUTHENTICATED_PATH,LOGOUT_PATH,COOKIE_NAME, authentication} from './config.js'; 
 
 
 
@@ -17,9 +17,9 @@ router.get('/' ,(req,res) =>{
 
 
 
-router.get(AUTHENTICATED_PATH,async (req,res) => {
-    const user =await User.findById(req.Authenticated.userId)
-    if (!(user && req.Authenticated)) {
+router.get(AUTHENTICATED_PATH,authentication,async (req,res) => {
+    const user =await User.findById(req.session.userId)
+    if (!(user && req.session.userId)) {
         res.status(401).send();
     } else {
         res.status(200).send();
@@ -34,8 +34,7 @@ router.post(LOGIN_PATH, async (req,res) => {
         if (!user || !bcrypt.compareSync(req.body.password,user.password)) {
             res.status(401).send()
         } else {
-          req.Authenticated.userId = user._id
-          
+          req.session.userId = user._id
           res.status(201).json(user.firstName)
         }
     } catch (err) {
@@ -54,10 +53,10 @@ router.post(REGISTER_PATH,(req,res) => {
 })
 
 
-router.post(LOGOUT_PATH,(req,res) => {
-     console.log(req.Authenticated)
-     console.log('Authenticated')
-      res.clearCookie('Authenticated')
+router.post(LOGOUT_PATH,authentication,(req,res) => {
+     
+req.session.destroy()
+res.clearCookie(COOKIE_NAME)
     
    
 })

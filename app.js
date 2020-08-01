@@ -1,10 +1,10 @@
 import  express      from  'express';
-import  sessions     from  'client-sessions';
+import  session      from  'express-session';
 import  router       from  './routes.js';
 import  dotenv       from  'dotenv';
-import  cookieParser from  'cookie-parser'
 
-import  { SESSION_OPTIONS , STATIC_ROUTE, authentication }  from  './config.js'
+
+import  { SESSION_OPTIONS , STATIC_ROUTE}  from  './config.js'
 
 dotenv.config();
 const PORT = process.env.PORT
@@ -13,11 +13,9 @@ const PORT = process.env.PORT
 
 
 const app  = express();
-app.use(cookieParser())
 app.use(express.static(STATIC_ROUTE))
 app.use(express.json());
-app.use(sessions(SESSION_OPTIONS)); 
-app.use (authentication) 
+app.use(session(SESSION_OPTIONS)); 
 app.use (router);
 
 

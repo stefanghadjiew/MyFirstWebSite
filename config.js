@@ -4,7 +4,7 @@ import  dotenv   from  'dotenv';
 
 dotenv.config()
 
-const COOKIE_NAME     = process.env.COOKIE_NAME
+export const COOKIE_NAME     = process.env.COOKIE_NAME
 const COOKIE_SECRET   = process.env.COOKIE_SECRET
 const COOKIE_PATH     = process.env.COOKIE_PATH
 
@@ -30,6 +30,8 @@ export const SESSION_OPTIONS = {
         cookieName : COOKIE_NAME ,
         secret     : COOKIE_SECRET,
         path       : COOKIE_PATH,
+        resave     :false,
+        saveUninitialized: false,
         cookie     : {  
                         httpOnly : true, 
                         maxAge : 60000,
@@ -40,13 +42,12 @@ export const SESSION_OPTIONS = {
 
 export const authentication =  (req,res,next) => {
     
-    if (req.Authenticated.seenyou) {
-        res.setHeader('X-Seen-You', 'true')
-} else {
-        req.Authenticated.seenyou = true
-        res.setHeader('X-Seen-You' , 'false')
-}
-next()
+    if (!req.session.userId) {
+        res.setHeader('X-Seen-You', 'false')
+    }  else {
+        res.setHeader('X-Seen-You' , 'true')
+    }
+    next()
 }
 
 export const LOGIN_PATH         = process.env.LOGIN_PATH
