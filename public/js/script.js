@@ -1,12 +1,11 @@
 const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]")
-const logIn = document.querySelector('[data-log-in-btn]')
+const logIn           = document.querySelector('[data-log-in-btn]')
 
 
 async function logOut() {
     if (logIn.innerHTML !== 'Log In') {
         try {
-            const response = await fetch('http://localhost:3000/users/logout',{ method : 'POST'})
-            console.log(response)
+            await fetch('http://localhost:3000/users/logout',{ method : 'POST'})
         } catch (err){
             console.log(err)
         }
@@ -91,12 +90,28 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
    =================================================== */
 
 
-   const body = document.querySelector('[data-body]')
-   const logInDiv = document.querySelector('[data-log-in-div]')
+   const body      = document.querySelector('[data-body]')
+   const logInDiv  = document.querySelector('[data-log-in-div]')
    const signUpDiv = document.querySelector('[data-sign-up]')
-   const logInBtn = document.querySelector('[data-log-in-btn]')
+   const logInBtn  = document.querySelector('[data-log-in-btn]')
 
-    function createListener (btn,div,addClass,removeClass) {
+    logInBtn.addEventListener('click', () => {
+        event.preventDefault()
+        checkIfUserIsAuthenticated()
+    })
+
+    function displayContent (div,addClass,removeClass) {
+        body.classList.toggle('hide-body')
+        logInDiv.classList.add("log-in-div-show")
+        div.classList.remove("animate__animated",removeClass)
+        div.classList.add("animate__animated",addClass)
+        setTimeout(() => {
+            div.style.display="block"
+            logInDiv.append(div)
+        },1000)
+    }
+
+   /*  function createListener (btn,div,addClass,removeClass) {
         btn.addEventListener("click", () => {
         event.preventDefault()
         checkIfUserIsAuthenticated()
@@ -110,21 +125,22 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
             logInDiv.append(div)
         },1000)
     })
-} 
+}  */
 
     async function checkIfUserIsAuthenticated () {
         const url = "http://localhost:3000/users/login/authenticated"
         const response = await fetch(url, {method : 'GET'})
             if(response.status === 401){
             alert ('Please Register to Use me !')
+            return
         }
         if(response.status === 200) {
-            alert('Feel Free to use me')
+            displayContent(signUpDiv,"animate__fadeInRight","animate__fadeOutRight")
         }
 }
 
 //LOG-IN BTN
-createListener(logInBtn ,signUpDiv,"animate__fadeInRight","animate__fadeOutRight")
+/* createListener(logInBtn ,signUpDiv,"animate__fadeInRight","animate__fadeOutRight") */
 
 
 //SEARCH BTN
@@ -299,8 +315,7 @@ function UserLog(email,password){
 formLog.addEventListener("submit", (e) => {
     e.preventDefault()
     const url = "http://localhost:3000/users/login"
-    let userLog = new UserLog(emailLog,passwordLog)
-    
+     let userLog = new UserLog(emailLog,passwordLog) 
     fetch(url, {
         method : 'POST' ,
         headers : {
@@ -316,7 +331,7 @@ formLog.addEventListener("submit", (e) => {
        if (response.status === 201) {
                 response.json().then(userName =>{
                 const changeLoginWithUserName = document.querySelector('[data-log-in-btn]')
-                changeLoginWithUserName.innerHTML = `Logged as ${userName}`
+                changeLoginWithUserName.innerHTML = "Log Out"
                 sessionStorage.setItem('name', userName);
                 closeClose(signUpDiv,"animate__fadeOutRight","animate__fadeInRight")
                })

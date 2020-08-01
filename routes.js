@@ -2,8 +2,8 @@ import  express         from  'express';
 import  User            from  "./models/models.js"
 import  bcrypt          from  'bcryptjs';
 import  dotenv          from  'dotenv';
-import  {HOST,COOKIE_PATH, STATIC_FILE,LOGIN_PATH,REGISTER_PATH,AUTHENTICATED_PATH,LOGOUT_PATH } from './config.js'; 
-
+import  { COOKIE_NAME } from  './configuration/authentication.js'
+import  { STATIC_FILE,LOGIN_PATH,REGISTER_PATH,AUTHENTICATED_PATH,LOGOUT_PATH } from './configuration/routesConfig.js'; 
 
 
 dotenv.config()
@@ -55,7 +55,7 @@ router.post(REGISTER_PATH,(req,res) => {
 
 router.post(LOGOUT_PATH,(req,res,next) => {
     req.Authenticated.destroy()  
-    res.clearCookie('Authenticated')
+    res.clearCookie(COOKIE_NAME)
     res.status(401).send()
 })
 

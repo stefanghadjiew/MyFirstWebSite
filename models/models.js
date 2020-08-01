@@ -1,5 +1,5 @@
-import   mongoose  from 'mongoose'
-import   {MONGO_URI,MONGO_OPTIONS} from '../config.js'
+import   mongoose                   from 'mongoose'
+import   {MONGO_URI,MONGO_OPTIONS}  from '../configuration/db.js'
 
 
 try {
