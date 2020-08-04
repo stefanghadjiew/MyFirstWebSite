@@ -3,7 +3,7 @@ import  dotenv   from  'dotenv';
 dotenv.config()
 
 export const COOKIE_NAME     = process.env.COOKIE_NAME
-       const COOKIE_SECRET          = process.env.COOKIE_SECRET
+       const COOKIE_SECRET   = process.env.COOKIE_SECRET
 export const COOKIE_PATH     = process.env.COOKIE_PATH
 
 export const SESSION_OPTIONS = {

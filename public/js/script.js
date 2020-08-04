@@ -1,3 +1,27 @@
+const addToBagBtn = document.querySelector("[data-addbag-btn]")
+const img = document.querySelector("[data-addbag-img]")
+
+
+
+
+addToBagBtn.addEventListener('click', () => {
+    event.preventDefault()
+        addProduct()
+} )
+
+
+async function addProduct () {
+    const url = "http://localhost:3000/products"
+    
+    
+    await fetch(url,{
+        method : 'POST',
+        'Content-type': 'text/plain ; charset=utf-8',
+        body :JSON.stringify(img.src) 
+    })
+}
+
+
 const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]")
 const logIn           = document.querySelector('[data-log-in-btn]')
 
@@ -88,7 +112,7 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
 /* ===================================================
    EVENT LISTENERS FOR BUTTONS
    =================================================== */
-
+    
 
    const body      = document.querySelector('[data-body]')
    const logInDiv  = document.querySelector('[data-log-in-div]')
