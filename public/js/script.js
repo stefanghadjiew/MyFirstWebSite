@@ -22,20 +22,9 @@ async function addProduct () {
 }
 
 
-const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]")
-const logIn           = document.querySelector('[data-log-in-btn]')
 
 
-async function logOut() {
-    if (logIn.innerHTML !== 'Log In') {
-        try {
-            await fetch('http://localhost:3000/users/logout',{ method : 'POST'})
-        } catch (err){
-            console.log(err)
-        }
-       
-    }
-}
+
 
 /* ===================================================
     INTERSECTION OBSERVERS
@@ -112,66 +101,73 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
 /* ===================================================
    EVENT LISTENERS FOR BUTTONS
    =================================================== */
-    
-
-   const body      = document.querySelector('[data-body]')
-   const logInDiv  = document.querySelector('[data-log-in-div]')
-   const signUpDiv = document.querySelector('[data-sign-up]')
-   const logInBtn  = document.querySelector('[data-log-in-btn]')
+    const body      = document.querySelector('[data-body]')
+    const logInDiv  = document.querySelector('[data-log-in-div]')
+    const signUpDiv = document.querySelector('[data-sign-up]')
+    const logInBtn  = document.getElementById(`logInBtn`)
 
     logInBtn.addEventListener('click', () => {
         event.preventDefault()
-        checkIfUserIsAuthenticated()
+        if (logInBtn.innerHTML !== 'Log In')  {
+                logOut()
+                alert("You have been logged out !")
+            }
+        if (logInBtn.innerHTML === 'Log In'){
+            displayContent(signUpDiv,"animate__fadeInRight","animate__fadeOutRight")
+        }  
+        
     })
 
+    
+    async function logOut() {
+        try {
+                await fetch('http://localhost:3000/users/logout',{ method : 'POST'})
+                logInBtn.innerHTML = 'Log In'
+            } catch (err){
+                console.log(err)
+            }
+        }
+
+    
     function displayContent (div,addClass,removeClass) {
         body.classList.toggle('hide-body')
         logInDiv.classList.add("log-in-div-show")
         div.classList.remove("animate__animated",removeClass)
         div.classList.add("animate__animated",addClass)
-        setTimeout(() => {
+        logInDiv.addEventListener("animationend",appendDiv)
+
+        function appendDiv () {
             div.style.display="block"
-            logInDiv.append(div)
-        },1000)
+            this.append(div)
+            this.removeEventListener("animationend",appendDiv)
     }
-
-   /*  function createListener (btn,div,addClass,removeClass) {
-        btn.addEventListener("click", () => {
-        event.preventDefault()
-        checkIfUserIsAuthenticated()
-        logOut() 
-        body.classList.toggle('hide-body')
-        logInDiv.classList.add("log-in-div-show")
-        div.classList.remove("animate__animated",removeClass)
-        div.classList.add("animate__animated",addClass)
-        setTimeout(() => {
-            div.style.display="block"
-            logInDiv.append(div)
-        },1000)
-    })
-}  */
-
-    async function checkIfUserIsAuthenticated () {
-        const url = "http://localhost:3000/users/login/authenticated"
-        const response = await fetch(url, {method : 'GET'})
-            if(response.status === 401){
-            alert ('Please Register to Use me !')
-            return
-        }
-        if(response.status === 200) {
-            displayContent(signUpDiv,"animate__fadeInRight","animate__fadeOutRight")
-        }
 }
 
-//LOG-IN BTN
-/* createListener(logInBtn ,signUpDiv,"animate__fadeInRight","animate__fadeOutRight") */
+
+async function checkIfUserIsAuthenticated () {                          
+    const url = "http://localhost:3000/users/login/authenticated"
+    const response = await fetch(url, {method : 'GET'})
+    .catch (err => {console.log(err)})
+        
+    if(response.status === 401){
+        return false;
+    }
+    if (response.status = 201) {
+        return true;	
+    }
+}
+
+
 
 
 //SEARCH BTN
 const searchBtn = document.querySelector('[data-search-btn]')
 const searchDiv = document.querySelector('[data-search-div]')
 
-createListener(searchBtn,searchDiv,"animate__fadeInLeft","animate__fadeOutLeft")
+searchBtn.addEventListener("click", () =>{
+    displayContent(searchDiv,"animate__fadeInLeft","animate__fadeOutLeft")
+})
+
 
 
 //CLOSE LOG-IN BTN
@@ -205,11 +201,21 @@ close(closeBtnSearch,searchDiv,"animate__fadeOutLeft","animate__fadeInLeft")
 
 
 // VISIT MEN GALLERY  -  BTN/FOOTER
- /* const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]") */
+ const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]") 
  const galleryWrapperDiv = document.querySelector('[data-gallery-wrapper-div]')
 
 visitGalleryBtn.forEach(btn => {
-    createListener(btn,galleryWrapperDiv,"animate__slideInUp","animate__slideOutDown")
+    btn.addEventListener("click",() =>{
+        event.preventDefault()
+        checkIfUserIsAuthenticated().then(res => {
+            if (res === true) {
+                displayContent(galleryWrapperDiv,"animate__slideInUp","animate__slideOutDown")
+            }   else {
+                    alert ('Please Log In to visit gallery!')
+                    return
+            }
+        })
+    })
 })
 
 // VISIT WOMEN GALLERY  -  BTN/FOOTER
@@ -217,14 +223,27 @@ const visitGalleryBtn2 = document.querySelectorAll("[data-visit-gallery-btn-2]")
 const galleryWrapperDiv2 = document.querySelector('[data-gallery-wrapper-div-women]')
 
 visitGalleryBtn2.forEach(btn => {
-    createListener(btn,galleryWrapperDiv2,"animate__slideInUp","animate__slideOutDown")
+    btn.addEventListener("click", () => {
+        checkIfUserIsAuthenticated().then(res => {
+            if (res === true ) {
+                displayContent(galleryWrapperDiv2,"animate__slideInUp","animate__slideOutDown")
+            } else {
+                alert ('Please Log In to visit gallery!')
+                    return
+            }
+        })
+        
+    })
+   
 })
 
 //VISI ABOUT US 
 const aboutUsLi = document.querySelector('[data-about-us-li]')
 const aboutUsDiv = document.querySelector('[data-about-us-div]')
+aboutUsLi.addEventListener("click", ()=> {
+    displayContent(aboutUsDiv,"animate__fadeInUpBig","animate__fadeOutDownBig")
+})
 
-createListener(aboutUsLi,aboutUsDiv,"animate__fadeInUpBig","animate__fadeOutDownBig")
 
 
 //BACK TO HOME PAGE FROM GALLERY - MEN
@@ -297,33 +316,28 @@ const password = document.getElementById('password')
 
 //SEND REGISTRATION POST REQUEST WITH USER INFO
 
-formReg.addEventListener('submit', (e) => {
+formReg.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = "http://localhost:3000/users/register"
-    let userInput = new UserReg(firstName,lastName,email,password) ; 
-
+    const userInput = new UserReg(firstName,lastName,email,password)
+    const response = await 
     fetch(url, {
         method : 'POST',
         headers : {
             'Content-type' : 'application/json; charset=utf-8'
         },
         body : JSON.stringify(userInput),
-    }) 
-    .then (response => {
+    }).catch (err => {console.log(err)}) 
+   
         if(response.status === 500){
             alert ("email is already in use");
         }
         if (response.status === 201){
             alert("Registration succesful!")
-            
+            swapRegisterLog();
         }
-        console.log(response.status)
-        response.json().then(data => {
-        console.log(data)  
-        })  
-       
-    }) 
- }) ;
+}) 
+
 
 
 //SEND LOG IN POST REQUEST WITH USER INFO
@@ -334,35 +348,32 @@ const passwordLog = document.getElementById('password_log')
 function UserLog(email,password){
     this.email = email.value,
     this.password = password.value
-}
+} 
 
-formLog.addEventListener("submit", (e) => {
+formLog.addEventListener("submit", async (e) => {
     e.preventDefault()
     const url = "http://localhost:3000/users/login"
-     let userLog = new UserLog(emailLog,passwordLog) 
+    const userLog = new UserLog(emailLog,passwordLog) 
+    const response = await  
     fetch(url, {
         method : 'POST' ,
         headers : {
             'Content-type' :  'application/json; charset=utf-8'
         },
-        body : JSON.stringify(userLog)
-    })
-    .then(response => {
-       if  (response.status === 401) {
-        alert ("User doesent exist!Please register!")
-        swapLogRegister();
-       } 
-       if (response.status === 201) {
-                response.json().then(userName =>{
-                const changeLoginWithUserName = document.querySelector('[data-log-in-btn]')
-                changeLoginWithUserName.innerHTML = "Log Out"
-                sessionStorage.setItem('name', userName);
-                closeClose(signUpDiv,"animate__fadeOutRight","animate__fadeInRight")
-               })
-           }
-           
-    })
+        body : JSON.stringify(userLog),
+    }).catch (err => {console.log(err)})
+        if (response.status === 401) {
+            alert ("User doesent exist!Please register!")
+            swapLogRegister();
+        } 
+       
+        if  (response.status === 201) {
+            const changeLoginToLogOut = document.getElementById(`logInBtn`)
+            changeLoginToLogOut.innerHTML = "Log Out"
+            closeClose(signUpDiv,"animate__fadeOutRight","animate__fadeInRight")
+        }
 })
+
 
 
 function closeClose (div,addClass,removeClass){
