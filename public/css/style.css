@@ -296,6 +296,8 @@
           animation-name: appearFromTop;
   -webkit-animation-duration: 2s;
           animation-duration: 2s;
+  -webkit-transition: background-color 0.5s ease-in-out;
+  transition: background-color 0.5s ease-in-out;
 }
 
 .nav a {
@@ -1763,5 +1765,9 @@ section:nth-child(2n) {
           animation-name: appearDiv;
   -webkit-animation-duration: 1s;
           animation-duration: 1s;
+}
+
+.headerBackground {
+  background-color: black;
 }
 /*# sourceMappingURL=style.css.map */

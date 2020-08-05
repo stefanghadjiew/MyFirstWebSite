@@ -1,14 +1,10 @@
 const addToBagBtn = document.querySelector("[data-addbag-btn]")
 const img = document.querySelector("[data-addbag-img]")
 
-
-
-
-addToBagBtn.addEventListener('click', () => {
-    event.preventDefault()
+addToBagBtn.addEventListener('click', (e) => {
+    e.preventDefault()
         addProduct()
 } )
-
 
 async function addProduct () {
     const url = "http://localhost:3000/products"
@@ -18,7 +14,7 @@ async function addProduct () {
         method : 'POST',
         'Content-type': 'text/plain ; charset=utf-8',
         body :JSON.stringify(img.src) 
-    })
+    }).catch(err => console.error(err))
 }
 
 
@@ -33,15 +29,36 @@ async function addProduct () {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if(entry.isIntersecting){
-                obj.classList.add("animate__animated",classname)
+                obj.classList.add("animate__animated", classname)
             } else {
-                obj.classList.remove("animate__animated",classname)
+                obj.classList.remove("animate__animated", classname)
             }
         })
     })
-
-    observer.observe(obj);
+            observer.observe(obj);
 } 
+
+
+const navbar = document.querySelector('.nav')
+const divCollection = document.querySelector('.collection-content')
+
+const options = {
+    rootMargin : "-100px 0px 0px 0px"
+}
+
+
+    const divCollectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(!entry.isIntersecting){
+               navbar.style.backgroundColor = "#333"
+            } else {
+                navbar.style.backgroundColor = "transparent"
+            }
+        })
+    }  ,options )
+
+    divCollectionObserver.observe(divCollection)
+
 
 //PRESENTATION-PARAGRAPH
 const PresentationP = document.querySelector('[data-p]')
@@ -87,7 +104,6 @@ const beingCreatedP = document.querySelector('[data-being-created-p]')
 createObserverAndAnimate(beingCreatedP,"animate__lightSpeedInRight")
 
 const finalWords = document.querySelector('[data-final-words]')
-/* createObserverAndAnimate(finalWords,"animate__fadeInUp") */
 
 const testedTitle = document.querySelector('[data-tested-title]')
 createObserverAndAnimate(testedTitle,"animate__flip") 
@@ -140,22 +156,22 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
             div.style.display="block"
             this.append(div)
             this.removeEventListener("animationend",appendDiv)
+        }
     }
-}
 
 
-async function checkIfUserIsAuthenticated () {                          
-    const url = "http://localhost:3000/users/login/authenticated"
-    const response = await fetch(url, {method : 'GET'})
-    .catch (err => {console.log(err)})
+    async function checkIfUserIsAuthenticated () {                          
+        const url = "http://localhost:3000/users/login/authenticated"
+        const response = await fetch(url, {method : 'GET'})
+        .catch (err => {console.log(err)})
         
-    if(response.status === 401){
-        return false;
+        if(response.status === 401){
+            return false;
+        }
+        if (response.status = 201) {
+            return true;	
+        }
     }
-    if (response.status = 201) {
-        return true;	
-    }
-}
 
 
 
@@ -223,7 +239,8 @@ const visitGalleryBtn2 = document.querySelectorAll("[data-visit-gallery-btn-2]")
 const galleryWrapperDiv2 = document.querySelector('[data-gallery-wrapper-div-women]')
 
 visitGalleryBtn2.forEach(btn => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
         checkIfUserIsAuthenticated().then(res => {
             if (res === true ) {
                 displayContent(galleryWrapperDiv2,"animate__slideInUp","animate__slideOutDown")
@@ -305,7 +322,7 @@ const firstName = document.getElementById('firstName')
 const lastName = document.getElementById('lastName') 
 const email = document.getElementById('email')   
 const password = document.getElementById('password')
-
+const repeatPassword = document.getElementById('repeatPassword')
 
  function UserReg(firstName,lastName,email,password) {
     this.firstName = firstName.value,
@@ -320,22 +337,32 @@ formReg.addEventListener('submit', async (e) => {
     e.preventDefault();
     const url = "http://localhost:3000/users/register"
     const userInput = new UserReg(firstName,lastName,email,password)
-    const response = await 
-    fetch(url, {
-        method : 'POST',
-        headers : {
-            'Content-type' : 'application/json; charset=utf-8'
-        },
-        body : JSON.stringify(userInput),
-    }).catch (err => {console.log(err)}) 
+    if (checkPasswordMatch(password,repeatPassword) === true) {
+        const response = await 
+        fetch(url, {
+            method : 'POST',
+            headers : {
+                'Content-type' : 'application/json; charset=utf-8'
+            },
+            body : JSON.stringify(userInput),
+            }).catch (err => {console.log(err)}) 
    
-        if(response.status === 500){
-            alert ("email is already in use");
-        }
-        if (response.status === 201){
-            alert("Registration succesful!")
-            swapRegisterLog();
-        }
+            if(response.status === 500){
+                alert ("email is already in use");
+            }
+            if (response.status === 201){
+                alert("Registration succesful!")
+                swapRegisterLog();
+            }
+            firstName.value = '';
+            lastName.value = '';
+            email.value = '';
+            password.value = '';
+            repeatPassword.value ='';
+            
+            } else {
+                return
+            }
 }) 
 
 
@@ -372,6 +399,9 @@ formLog.addEventListener("submit", async (e) => {
             changeLoginToLogOut.innerHTML = "Log Out"
             closeClose(signUpDiv,"animate__fadeOutRight","animate__fadeInRight")
         }
+            
+            emailLog.value = '';
+            passwordLog.value = '';
 })
 
 
@@ -389,5 +419,14 @@ function closeClose (div,addClass,removeClass){
     } 
 }
 
-
+function checkPasswordMatch (password,repeatPassword) {
+    if (password.value !== repeatPassword.value) {
+        alert ("Passwords didnt match!")
+        password.value = '';
+        repeatPassword.value = '';
+        return false;
+    } else {
+        return true;
+    }
+}
 
