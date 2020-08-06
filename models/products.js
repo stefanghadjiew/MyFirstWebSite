@@ -1,7 +1,27 @@
 import   mongoose   from 'mongoose'
 
-const productSchema = new mongoose.Schema ({body : String})
+const bagSchema = new mongoose.Schema ({
+    userId: { 
+        type : mongoose.Schema.Types.ObjectId,
+        ref: "User"
+     },
+     products : [
+         {
+             quantity : Number,
+             src : String,
+             price : Number,
+            }
+     ],
+     active : {
+         type: Boolean,
+            default: true
+     },
+     modified : {
+         type: Date,
+            default: Date.now
+     }
+})
 
-const Product = mongoose.model("Product",productSchema)
+const Bag = mongoose.model("Bag",bagSchema)
 
-export default Product;
+export default Bag;

@@ -1,6 +1,6 @@
 import  express         from  'express';
 import  User            from  "./models/models.js"
-import  Product         from  "./models/products.js" 
+import  Bag             from  "./models/products.js" 
 import  bcrypt          from  'bcryptjs';
 import  dotenv          from  'dotenv';
 import  mongoose                            from  'mongoose'; 
@@ -14,6 +14,8 @@ try {
 } catch (err) {
      console.log(err)
 }
+
+
 
 
 dotenv.config()
@@ -76,15 +78,15 @@ router.post(LOGOUT_PATH, (req,res) => {
 
 
 router.post(PRODUCT_PATH,async (req,res) => {
-    let product = new Product({body : req.body})
-    try {
-        await product.save(() => {
-              console.log("product saved!")
-              res.json (product); 
+    const userId = req.MyCookie.userId
+    const {quantity,src,price} = req.body
+    const newCart = await Bag.create({
+        userId,
+        products: [{ quantity, src, price }]
+      })
+      res.json(newCart)
     })
-    } catch (err){
-        console.log(err)
-    }
-}) 
+    
+
 
 export default router;

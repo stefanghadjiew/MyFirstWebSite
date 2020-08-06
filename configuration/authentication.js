@@ -5,27 +5,28 @@ dotenv.config()
 
 export const COOKIE_NAME     = process.env.COOKIE_NAME
        const COOKIE_SECRET   = process.env.COOKIE_SECRET
-export const COOKIE_PATH     = process.env.LOGIN_PATH
+
 
 export const SESSION_OPTIONS = {
         cookieName : COOKIE_NAME ,
         secret     : COOKIE_SECRET,
+        duration   : 30 * 60 * 1000,
         cookie     : {  
                         path      : LOGIN_PATH, 
-                        ephemeral : true, 
+                        /* ephemeral : true,  */
                         httpOnly  : true, 
-                        secure    : false, 
+                        secure    : false,
+                        
                         
     }
 }
 
 export const authentication =  (req,res,next) => {
     
-    if (req.MyCookie.seenyou) {
-        res.setHeader('X-Seen-You', 'true')
+    if (!req.MyCookie.userId) {
+        res.setHeader('X-Seen-You', 'false')
     }  else {
-        req.MyCookie.seenyou = true
-        res.setHeader('X-Seen-You' , 'false')
+        res.setHeader('X-Seen-You' , 'true')
     }
     next()
 }

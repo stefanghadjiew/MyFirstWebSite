@@ -7,17 +7,27 @@ addToBagBtn.addEventListener('click', (e) => {
 } )
 
 async function addProduct () {
-    const url = "http://localhost:3000/products"
-    
+    const url = "http://127.0.0.1:3000/products"
+    const product = {
+        quantity : 1,
+        src : img.src.replace("http://127.0.0.1:3000",""),
+        price : 1000 
+    }
     
     await fetch(url,{
         method : 'POST',
-        'Content-type': 'text/plain ; charset=utf-8',
-        body :JSON.stringify(img.src) 
+        headers : {
+            'Content-type': 'application/json ; charset=utf-8'
+        },
+        body : JSON.stringify(product)
     }).catch(err => console.error(err))
 }
 
+async function getProduct() {
+    const url = "http://127.0.0.1:3000/products"
 
+    await fetch (url, { method : "GET"})
+}
 
 
 
@@ -137,7 +147,7 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
     
     async function logOut() {
         try {
-                await fetch('http://localhost:3000/users/logout',{ method : 'POST'})
+                await fetch('http://127.0.0.1:3000/users/logout',{ method : 'POST'})
                 logInBtn.innerHTML = 'Log In'
             } catch (err){
                 console.log(err)
@@ -161,7 +171,7 @@ createObserverAndAnimate(h3,"animate__jackInTheBox")
 
 
     async function checkIfUserIsAuthenticated () {                          
-        const url = "http://localhost:3000/users/login/authenticated"
+        const url = "http://127.0.0.1:3000/users/login/authenticated"
         const response = await fetch(url, {method : 'GET'})
         .catch (err => {console.log(err)})
         
@@ -335,7 +345,7 @@ const repeatPassword = document.getElementById('repeatPassword')
 
 formReg.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = "http://localhost:3000/users/register"
+    const url = "http://127.0.0.1:3000/users/register"
     const userInput = new UserReg(firstName,lastName,email,password)
     if (checkPasswordMatch(password,repeatPassword) === true) {
         const response = await 
@@ -379,7 +389,7 @@ function UserLog(email,password){
 
 formLog.addEventListener("submit", async (e) => {
     e.preventDefault()
-    const url = "http://localhost:3000/users/login"
+    const url = "http://127.0.0.1:3000/"
     const userLog = new UserLog(emailLog,passwordLog) 
     const response = await  
     fetch(url, {

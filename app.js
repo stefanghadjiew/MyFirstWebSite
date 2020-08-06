@@ -11,7 +11,7 @@ const PORT = process.env.PORT
 const app  = express();
         
 app.use(express.json())
-app.use(express.text())
+/* app.use(express.text())  */
 app.use(express.static(STATIC_ROUTE))
 app.use(sessions(SESSION_OPTIONS));
 app.use(authentication); 
