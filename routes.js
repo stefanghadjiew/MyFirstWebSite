@@ -48,7 +48,7 @@ router.post(LOGIN_PATH,async (req,res) => {
             } else {
                 req.MyCookie.userId = user._id
                 res.status(201).send()
-        }
+            }
     } catch (err) {
         console.log(err)
     }
@@ -61,8 +61,8 @@ router.post(REGISTER_PATH,async (req,res) => {
     let user = new User(req.body)
     try {
         await  user.save((err) => {
-            (err) ? res.status(500).send() : res.status(201).send();
-})
+        (err) ? res.status(500).send() : res.status(201).send();
+    })
     } catch (err){
         console.log(err)
     }
@@ -79,13 +79,29 @@ router.post(LOGOUT_PATH, (req,res) => {
 
 router.post(PRODUCT_PATH,async (req,res) => {
     const userId = req.MyCookie.userId
-    const {quantity,src,price} = req.body
-    const newCart = await Bag.create({
-        userId,
-        products: [{ quantity, src, price }]
-      })
-      res.json(newCart)
-    })
+   /*  const {quantity,src,price} = req.body */
+   try{
+   const bag = await Bag.findOne({userId: userId})
+    if (bag) {
+       let itemIndex = bag.products.findIndex(p => p.src =req.body.src)
+            if(itemIndex > -1) {
+                let productItem = bag.products[itemIndex]
+                productItem.quantity += req.body.quantity
+            } else {
+               bag.products.push(req.body) 
+            }
+            const bagUpd = await bag.save()
+            res.status(201).send(bagUpd)
+        } else {
+        console.log("hello")
+        const newCart = await Bag.create({
+            userId : userId,
+            products: [{ quantity, src, price }]
+          })
+          res.send(newCart) 
+    }
+} catch(err) {console.log(err)}
+})
     
 
 

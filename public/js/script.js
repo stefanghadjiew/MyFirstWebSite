@@ -9,7 +9,7 @@ addToBagBtn.addEventListener('click', (e) => {
 async function addProduct () {
     const url = "http://127.0.0.1:3000/products"
     const product = {
-        quantity : 1,
+        quantity : 5,
         src : img.src.replace("http://127.0.0.1:3000",""),
         price : 1000 
     }

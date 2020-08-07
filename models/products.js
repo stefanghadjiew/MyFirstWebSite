@@ -3,11 +3,14 @@ import   mongoose   from 'mongoose'
 const bagSchema = new mongoose.Schema ({
     userId: { 
         type : mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref  : "User"
      },
      products : [
          {
-             quantity : Number,
+             quantity :{
+                 type: Number, 
+                 default: 0
+                },
              src : String,
              price : Number,
             }
