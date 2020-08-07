@@ -8,3 +8,4 @@ export const LOGOUT_PATH        = process.env.LOGOUT_PATH
 export const STATIC_ROUTE       = process.env.STATIC_ROUTE
 export const STATIC_FILE        = process.env.STATIC_FILE
 export const PRODUCT_PATH       = process.env.PRODUCT_PATH
+export const DELETE_CART        = process.env.DELETE_CART

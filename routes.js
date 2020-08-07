@@ -6,7 +6,7 @@ import  dotenv          from  'dotenv';
 import  mongoose                            from  'mongoose'; 
 import  { MONGO_URI,MONGO_OPTIONS }         from  './configuration/db.js'
 import  { COOKIE_NAME } from  './configuration/authentication.js'
-import  { PRODUCT_PATH,STATIC_FILE,LOGIN_PATH,REGISTER_PATH,AUTHENTICATED_PATH,LOGOUT_PATH } from './configuration/routesConfig.js'; 
+import  { DELETE_CART,PRODUCT_PATH,STATIC_FILE,LOGIN_PATH,REGISTER_PATH,AUTHENTICATED_PATH,LOGOUT_PATH } from './configuration/routesConfig.js'; 
 
 try {
     mongoose.connect(MONGO_URI, MONGO_OPTIONS);
@@ -79,30 +79,37 @@ router.post(LOGOUT_PATH, (req,res) => {
 
 router.post(PRODUCT_PATH,async (req,res) => {
     const userId = req.MyCookie.userId
-   /*  const {quantity,src,price} = req.body */
-   try{
-   const bag = await Bag.findOne({userId: userId})
-    if (bag) {
-       let itemIndex = bag.products.findIndex(p => p.src =req.body.src)
-            if(itemIndex > -1) {
-                let productItem = bag.products[itemIndex]
-                productItem.quantity += req.body.quantity
+    const {quantity,src,price} = req.body 
+   try {
+        const bag = await Bag.findOne({userId: userId})
+            if (bag) {
+                let itemIndex = bag.products.findIndex(p => p.src =req.body.src)
+                    if(itemIndex > -1) {
+                        let productItem = bag.products[itemIndex]
+                        productItem.quantity += req.body.quantity
+                    } else {
+                        bag.products.push(req.body) 
+                    }
+                    const bagUpd = await bag.save()
+                    res.status(201).send(bagUpd)
             } else {
-               bag.products.push(req.body) 
+                console.log("hello")
+                const newCart = await Bag.create({
+                    userId : userId,
+                    products: [{ quantity, src, price }]
+                })
+                res.send(newCart) 
             }
-            const bagUpd = await bag.save()
-            res.status(201).send(bagUpd)
-        } else {
-        console.log("hello")
-        const newCart = await Bag.create({
-            userId : userId,
-            products: [{ quantity, src, price }]
-          })
-          res.send(newCart) 
-    }
 } catch(err) {console.log(err)}
 })
     
-
+router.delete(DELETE_CART,async (req,res) => {
+    try {
+        const userBag = await Bag.findOne({userId : req.MyCookie.userId})
+        userBag.products = [];
+        await userBag.save()
+        res.send(userBag)
+    } catch(err) { console.log(err) }
+})
 
 export default router;

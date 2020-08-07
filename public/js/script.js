@@ -9,7 +9,7 @@ addToBagBtn.addEventListener('click', (e) => {
 async function addProduct () {
     const url = "http://127.0.0.1:3000/products"
     const product = {
-        quantity : 5,
+        quantity : 1,
         src : img.src.replace("http://127.0.0.1:3000",""),
         price : 1000 
     }
@@ -29,8 +29,17 @@ async function getProduct() {
     await fetch (url, { method : "GET"})
 }
 
+const deleteBtn = document.querySelector('[data-a2]')
+deleteBtn.addEventListener('click',deleteProduct)
 
-
+async function deleteProduct() {
+    const url = "http://127.0.0.1:3000/products/delete"
+    const response = await fetch (url,{
+        method : 'DELETE'
+    })
+    console.log(response.status)
+    
+}
 
 /* ===================================================
     INTERSECTION OBSERVERS
