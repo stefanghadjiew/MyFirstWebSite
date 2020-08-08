@@ -1,6 +1,9 @@
 const addToBagBtn = document.querySelector("[data-addbag-btn]")
 const img = document.querySelector("[data-addbag-img]")
 
+
+
+
 addToBagBtn.addEventListener('click', (e) => {
     e.preventDefault()
         addProduct()
@@ -449,3 +452,39 @@ function checkPasswordMatch (password,repeatPassword) {
     }
 }
 
+
+const cartBtn = document.querySelector('[data-cart-btn]')
+cartBtn.addEventListener('click',() => {
+event.preventDefault()
+displayCartContent()
+})
+
+async function displayCartContent() {
+    const url = "http://127.0.0.1:3000/products"
+    await fetch (url,{method : "GET"})
+    .then(res=>res.json())
+    .then(data => data[0].src)
+        body.classList.toggle('hide-body')
+        logInDiv.classList.add("log-in-div-show")
+        const ul = document.createElement("ul")
+        ul.classList.add('grid')
+        ul.innerHTML += `
+                     <li class ="grid-item">
+                        <img style="width : 100% ; height : 100%" src = "/MyFirstWebSite/public/images/wallhaven-0pppve.jpg"/>
+                    </li>     
+                     <li class ="grid-item">
+                        <img style="width : 100% ; height : 100%" src = "/MyFirstWebSite/public/images/wallhaven-0pppve.jpg"/>
+                    </li>     
+                     <li class ="grid-item">
+                        <img style="width : 100% ; height : 100%" src = "/MyFirstWebSite/public/images/wallhaven-0pppve.jpg"/>
+                    </li>     
+                     <li class ="grid-item">
+                        <img style="width : 100% ; height : 100%" src = "/MyFirstWebSite/public/images/wallhaven-0pppve.jpg"/>
+                    </li>     
+                     <li class ="grid-item">
+                        <img style="width : 100% ; height : 100%" src = "/MyFirstWebSite/public/images/wallhaven-0pppve.jpg"/>
+                    </li>     
+                        `
+        logInDiv.append(ul)
+    
+} 

@@ -80,7 +80,7 @@ router.post(LOGOUT_PATH, (req,res) => {
 router.post(PRODUCT_PATH,async (req,res) => {
     const userId = req.MyCookie.userId
     const {quantity,src,price} = req.body 
-   try {
+    try {
         const bag = await Bag.findOne({userId: userId})
             if (bag) {
                 let itemIndex = bag.products.findIndex(p => p.src =req.body.src)
@@ -93,8 +93,7 @@ router.post(PRODUCT_PATH,async (req,res) => {
                     const bagUpd = await bag.save()
                     res.status(201).send(bagUpd)
             } else {
-                console.log("hello")
-                const newCart = await Bag.create({
+                    const newCart = await Bag.create({
                     userId : userId,
                     products: [{ quantity, src, price }]
                 })
@@ -102,7 +101,23 @@ router.post(PRODUCT_PATH,async (req,res) => {
             }
 } catch(err) {console.log(err)}
 })
-    
+
+router.get(PRODUCT_PATH,async (req,res) =>{
+    try {
+        const userId = req.MyCookie.userId
+        if(userId) {
+            const bagRegistered = await Bag.findOne({userId: userId})
+            res.send(bagRegistered.products)
+        } else {
+            
+            const userId = User._id
+            const bagNotRegistered = await Bag.findOne(userId)
+            res.json(bagNotRegistered.products)
+        }
+    } catch(err) {console.log(err)} 
+       
+})
+
 router.delete(DELETE_CART,async (req,res) => {
     try {
         const userBag = await Bag.findOne({userId : req.MyCookie.userId})
