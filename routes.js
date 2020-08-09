@@ -83,12 +83,13 @@ router.post(PRODUCT_PATH,async (req,res) => {
     try {
         const bag = await Bag.findOne({userId: userId})
             if (bag) {
-                let itemIndex = bag.products.findIndex(p => p.src =req.body.src)
+                let itemIndex = bag.products.findIndex(p => p.src === src)
                     if(itemIndex > -1) {
+                        console.log(itemIndex)
                         let productItem = bag.products[itemIndex]
-                        productItem.quantity += req.body.quantity
+                        productItem.quantity += quantity
                     } else {
-                        bag.products.push(req.body) 
+                        bag.products.push({quantity,src,price}) 
                     }
                     const bagUpd = await bag.save()
                     res.status(201).send(bagUpd)
@@ -110,7 +111,7 @@ router.get(PRODUCT_PATH,async (req,res) =>{
             res.send(bagRegistered.products)
         } else {
             
-            const userId = User._id
+            const userId = User._id 
             const bagNotRegistered = await Bag.findOne(userId)
             res.json(bagNotRegistered.products)
         }

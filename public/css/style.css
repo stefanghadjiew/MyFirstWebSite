@@ -396,7 +396,7 @@
       grid-template-rows: repeat(3, 33.3%);
 }
 
-.grid-item {
+.grid .grid-item {
   position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -415,18 +415,18 @@
   transition: all 0.5s;
 }
 
-.grid-item:hover {
+.grid .grid-item:hover {
   outline: 20px solid #EE5A24;
   -webkit-transform: scale(0.85);
           transform: scale(0.85);
 }
 
-.grid-item:hover img {
+.grid .grid-item:hover img {
   -webkit-filter: brightness(40%);
           filter: brightness(40%);
 }
 
-.grid-item:hover .grid-btn-wrapper {
+.grid .grid-item:hover .grid-btn-wrapper {
   opacity: 1;
   -webkit-transform: scale(0.85);
           transform: scale(0.85);
@@ -434,7 +434,7 @@
   transition: all 0.5s;
 }
 
-.grid-item:hover > p {
+.grid .grid-item:hover > p {
   opacity: 1;
   color: white;
   -webkit-transform: scale(0.85);
@@ -443,21 +443,21 @@
   transition: all 0.5s;
 }
 
-p {
+.grid p {
   opacity: 0;
   position: absolute;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
 }
 
-img {
+.grid img {
   width: 100%;
   height: 100%;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
 }
 
-.grid-btn-wrapper {
+.grid .grid-btn-wrapper {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -469,7 +469,7 @@ img {
   transition: all 0.5s;
 }
 
-.grid-item-btn {
+.grid .grid-item-btn {
   font-family: 'Krona One';
   background-color: white;
   width: 50%;

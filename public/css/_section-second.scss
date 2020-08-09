@@ -18,7 +18,7 @@
     display: grid;
     grid-template-columns: repeat(3,33.3%);
     grid-template-rows: repeat(3,33.3%);
-}
+
 
 
     .grid-item {
@@ -82,5 +82,4 @@
         background-color: white;
         width: 50%;
         }
-
-  
+}

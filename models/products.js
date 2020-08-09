@@ -7,7 +7,7 @@ const bagSchema = new mongoose.Schema ({
      },
      products : [
          {
-             quantity :{
+             quantity : {
                  type: Number, 
                  default: 0
                 },

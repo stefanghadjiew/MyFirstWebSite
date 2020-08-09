@@ -1,30 +1,38 @@
-const addToBagBtn = document.querySelector("[data-addbag-btn]")
-const img = document.querySelector("[data-addbag-img]")
+const addToBagBtn = document.querySelectorAll("[data-addbag-btn]")
+/* const img = document.querySelector("[data-addbag-img]") */
 
 
-
-
-addToBagBtn.addEventListener('click', (e) => {
-    e.preventDefault()
+addToBagBtn.forEach(btn => {
+    btn.addEventListener("click", () => {
+        event.preventDefault()
+        const parent = btn.parentElement.parentElement
+        const img =     parent.childNodes[1]
+        const imgSrc = img.getAttribute("src")
         addProduct()
-} )
 
-async function addProduct () {
-    const url = "http://127.0.0.1:3000/products"
-    const product = {
-        quantity : 1,
-        src : img.src.replace("http://127.0.0.1:3000",""),
-        price : 1000 
-    }
-    
-    await fetch(url,{
-        method : 'POST',
-        headers : {
-            'Content-type': 'application/json ; charset=utf-8'
-        },
-        body : JSON.stringify(product)
-    }).catch(err => console.error(err))
-}
+        async function addProduct () {
+            const url = "http://127.0.0.1:3000/products"
+            const product = {
+                quantity : 1,
+                src : imgSrc,
+                price : 1000 
+            }
+            
+            await fetch(url,{
+                method : 'POST',
+                headers : {
+                    'Content-type': 'application/json ; charset=utf-8'
+                },
+                body : JSON.stringify(product)
+            }).catch(err => console.error(err))
+        }
+        
+    })
+})
+
+
+
+
 
 async function getProduct() {
     const url = "http://127.0.0.1:3000/products"
@@ -461,30 +469,33 @@ displayCartContent()
 
 async function displayCartContent() {
     const url = "http://127.0.0.1:3000/products"
-    await fetch (url,{method : "GET"})
+     await fetch (url,{method : "GET"})
     .then(res=>res.json())
-    .then(data => data[0].src)
+    .then(data => {
         body.classList.toggle('hide-body')
         logInDiv.classList.add("log-in-div-show")
         const ul = document.createElement("ul")
         ul.classList.add('grid')
         ul.innerHTML += `
                      <li class ="grid-item">
-                        <img style="width : 100% ; height : 100%" src = "/MyFirstWebSite/public/images/wallhaven-0pppve.jpg"/>
+                        <img style="width : 100% ; height : 100%" src = ${data[0].src}>
                     </li>     
                      <li class ="grid-item">
-                        <img style="width : 100% ; height : 100%" src = "/MyFirstWebSite/public/images/wallhaven-0pppve.jpg"/>
+                        <img style="width : 100% ; height : 100%" src = ${data[0].src}>
                     </li>     
                      <li class ="grid-item">
-                        <img style="width : 100% ; height : 100%" src = "/MyFirstWebSite/public/images/wallhaven-0pppve.jpg"/>
+                        <img style="width : 100% ; height : 100%" src = ${data[0].src}>
                     </li>     
                      <li class ="grid-item">
-                        <img style="width : 100% ; height : 100%" src = "/MyFirstWebSite/public/images/wallhaven-0pppve.jpg"/>
+                        <img style="width : 100% ; height : 100%" src = ${data[0].src}>
                     </li>     
                      <li class ="grid-item">
-                        <img style="width : 100% ; height : 100%" src = "/MyFirstWebSite/public/images/wallhaven-0pppve.jpg"/>
+                        <img style="width : 100% ; height : 100%" src = ${data[0].src}>
                     </li>     
                         `
         logInDiv.append(ul)
+    } /* data[0].src */ ).catch(err => console.log(err))
+       
+         
     
 } 
