@@ -97,8 +97,6 @@ async function getProduct() {
     await fetch (url, { method : "GET"}).catch(err =>{console.log(err)})
 }
 
-const deleteBtn = document.querySelector('[data-a2]')
-deleteBtn.addEventListener('click',deleteProduct)
 
 async function deleteProduct() {
     const url = "http://127.0.0.1:3000/products/delete"
@@ -374,32 +372,60 @@ async function displayCartContent() {
     .then(products => {
         body.classList.toggle('hide-body')
         logInDiv.classList.add("log-in-div-show")
+        logInDiv.style.background = "white"
         const checkOut = document.createElement("div")
+        checkOut.classList.add("btns-wrapper")
+        checkOut.style.paddingTop= "5vh"; 
+        checkOut.style.paddingBottom= "5vh"; 
+        checkOut.style.background = "white";
         checkOut.innerHTML = ` 
-        <div class="btns-wrapper">
-            <a href="#" class="btn">Check Out</a>
-            <a href="#" class="btn">Clear Bag</a>
-        </div>
+            	<a href="#" class="btn">Check Out</a>
+                <a href="#" class="btn" data-a2>Clear Bag</a>
+        
         `
+        const divUlwrap = document.createElement("div")
+        divUlwrap.style.margin = '5vh 5vw';
         const ul = document.createElement("ul")
-        ul.classList.add('grid')
+        ul.classList.add('cart-grid')
         products.forEach(product => {
-           
+            const price = product.price * product.quantity
             ul.innerHTML += `
                          <li class ="grid-item">
-                            <img style="width : 100% ; height : 100%" src = ${product.src}>
-                        </li>`
-                        
-                        
+                            <img style="width : 100% ; height : 100px" src = ${product.src}>
+                            <p>Quantity : ${product.quantity}</p>
+                            <p>Price : ${price}$
+                        </li>
+                        `
         })
-        logInDiv.append(ul)
+        let total=0;
+        for(let i =0;i<products.length;i++) {
+           total += products[i].price * products[i].quantity
+           }
+        const totalPrice = document.createElement("p")
+        totalPrice.innerHTML = `TOTAL PRICE : ${total}$`
+        totalPrice.style.marginTop = "5vh"
+        divUlwrap.append(ul)
+        divUlwrap.append(totalPrice)
+        const homePage = document.createElement("div")
+        homePage.classList.add("home-page")
+        homePage.innerHTML = `
+        <a href="" data-home-page-3><i class="backward icon"></i><span class="black">Home</span><span class="orange">Page</span></a>
+        `
+        homePage.style.paddingTop = "3vh"
         logInDiv.append(checkOut)
+        logInDiv.append(divUlwrap)
+        logInDiv.append(homePage)
+        const deleteBtn = document.querySelector('[data-a2]')
+        deleteBtn.addEventListener('click',() => {
+            deleteProduct()
+            divUlwrap.removeChild(ul)
+            divUlwrap.removeChild(totalPrice)
+        })
        
     }).catch(err => console.log(err))
-       
-         
-    
-} 
+}
+
+
 
 /* ===================================================
     INTERSECTION OBSERVERS

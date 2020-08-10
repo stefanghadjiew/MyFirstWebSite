@@ -117,3 +117,11 @@ section:nth-child(2n) {
 .headerBackground {
     background-color: black;
 }
+
+.cart-grid {
+    display: grid;
+    list-style-type: none;
+    grid-template-columns: repeat(10,9%);
+    column-gap: 1%;
+    row-gap: 5%;
+}

@@ -1770,4 +1770,15 @@ section:nth-child(2n) {
 .headerBackground {
   background-color: black;
 }
+
+.cart-grid {
+  display: -ms-grid;
+  display: grid;
+  list-style-type: none;
+  -ms-grid-columns: (9%)[10];
+      grid-template-columns: repeat(10, 9%);
+  -webkit-column-gap: 1%;
+          column-gap: 1%;
+  row-gap: 5%;
+}
 /*# sourceMappingURL=style.css.map */
