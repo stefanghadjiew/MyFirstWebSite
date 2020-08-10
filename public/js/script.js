@@ -22,6 +22,22 @@ async function checkIfUserIsAuthenticated () {
 }
 
 
+async function checkBagProducts () {
+     const url = "http://127.0.0.1:3000/products"
+     await fetch(url,{method : "GET"})
+     .then(res => res.json())
+     .then(products => {
+        const bagCountDisplay = document.querySelector('[data-bag-span]')
+        let total = 0 
+        for(let i=0;i<products.length;i++) {
+            total += products[i].quantity
+        } 
+        bagCountDisplay.innerHTML = `${total} products`
+    })
+}
+
+checkBagProducts();
+
 logInBtn.addEventListener('click', () => {
     event.preventDefault()
     if (logInBtn.innerHTML !== 'Log In')  {
@@ -84,7 +100,17 @@ addToBagBtns.forEach(btn => {
                     'Content-type': 'application/json ; charset=utf-8'
                 },
                 body : JSON.stringify(product)
-            }).catch(err => console.error(err))
+            })
+            .then(res =>res.json())
+            .then(products => {
+                const bagCountDisplay = document.querySelector('[data-bag-span]')
+                let total =0;
+                for(let i = 0;i<products.products.length;i++){
+                   total += products.products[i].quantity
+                }
+                bagCountDisplay.innerHTML = `${total} products`
+            })
+            .catch(err => console.error(err))
         }
         
     })
@@ -370,16 +396,14 @@ async function displayCartContent() {
      await fetch (url,{method : "GET"})
     .then(res=>res.json())
     .then(products => {
-        body.classList.toggle('hide-body')
-        logInDiv.classList.add("log-in-div-show")
-        logInDiv.style.background = "white"
+        createBagBody()
         const checkOut = document.createElement("div")
         checkOut.classList.add("btns-wrapper")
         checkOut.style.paddingTop= "5vh"; 
         checkOut.style.paddingBottom= "5vh"; 
         checkOut.style.background = "white";
         checkOut.innerHTML = ` 
-            	<a href="#" class="btn">Check Out</a>
+            	<a href="#" class="btn" data-a1>Check Out</a>
                 <a href="#" class="btn" data-a2>Clear Bag</a>
         
         `
@@ -400,7 +424,7 @@ async function displayCartContent() {
         let total=0;
         for(let i =0;i<products.length;i++) {
            total += products[i].price * products[i].quantity
-           }
+        }
         const totalPrice = document.createElement("p")
         totalPrice.innerHTML = `TOTAL PRICE : ${total}$`
         totalPrice.style.marginTop = "5vh"
@@ -409,7 +433,7 @@ async function displayCartContent() {
         const homePage = document.createElement("div")
         homePage.classList.add("home-page")
         homePage.innerHTML = `
-        <a href="" data-home-page-3><i class="backward icon"></i><span class="black">Home</span><span class="orange">Page</span></a>
+        <a href="" data-home-page-4><i class="backward icon"></i><span class="black">Home</span><span class="orange">Page</span></a>
         `
         homePage.style.paddingTop = "3vh"
         logInDiv.append(checkOut)
@@ -417,15 +441,62 @@ async function displayCartContent() {
         logInDiv.append(homePage)
         const deleteBtn = document.querySelector('[data-a2]')
         deleteBtn.addEventListener('click',() => {
-            deleteProduct()
-            divUlwrap.removeChild(ul)
-            divUlwrap.removeChild(totalPrice)
+            if (total ===0) {
+                alert ("Your Bag is empty")
+            } else {
+                deleteProduct()
+                const bagCountDisplay = document.querySelector('[data-bag-span]')
+                bagCountDisplay.innerHTML = `0 products`
+                total = 0
+                totalPrice.innerHTML = `TOTAL PRICE : ${total}$`
+                ul.remove()
+                
+                
+            }
+        })
+        
+        
+        const checkOutBtn = document.querySelector('[data-a1]')
+        checkOutBtn.addEventListener('click',()=> {
+            if(!total) {
+                alert ("Your Bag is empty!")
+                return
+            } else {
+                alert ("Thank you for your purchase")
+            }
+        })
+
+        
+        const homePageBtn = document.querySelector('[data-home-page-4]')
+        homePageBtn.addEventListener('click', ()=> {
+            event.preventDefault()
+            removeBagBody()
+            ul.remove()
+            totalPrice.remove()
+            divUlwrap.remove()
+            checkOut.remove()
+            homePage.remove()
         })
        
     }).catch(err => console.log(err))
 }
 
 
+function createBagBody() {
+    body.classList.toggle('hide-body')
+    logInDiv.classList.add("log-in-div-show")
+    logInDiv.style.background = "white"
+}
+
+function removeBagBody() {
+    body.classList.toggle('hide-body')
+    logInDiv.classList.remove('log-in-div-show')
+}
+
+
+function displayBagProductsCount () {
+
+}
 
 /* ===================================================
     INTERSECTION OBSERVERS
