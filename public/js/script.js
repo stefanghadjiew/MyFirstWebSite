@@ -1,13 +1,73 @@
-const addToBagBtn = document.querySelectorAll("[data-addbag-btn]")
-/* const img = document.querySelector("[data-addbag-img]") */
+const logInBtn  = document.getElementById(`logInBtn`)
+const body      = document.querySelector('[data-body]')
+const logInDiv  = document.querySelector('[data-log-in-div]')
+const signUpDiv = document.querySelector('[data-sign-up]')
+    
+
+window.addEventListener('DOMContentLoaded',checkIfUserIsAuthenticated)
+
+async function checkIfUserIsAuthenticated () {                          
+    const url = "http://127.0.0.1:3000/users/login/authenticated"
+    const response = await fetch(url, {method : 'GET'})
+    .catch (err => {console.log(err)})
+    
+    if(response.status === 401){
+        logInBtn.innerHTML = "Log In"
+        return false;
+    }
+    if (response.status = 200) {
+        logInBtn.innerHTML = "Log Out"
+        return true;	
+    }
+}
 
 
-addToBagBtn.forEach(btn => {
+logInBtn.addEventListener('click', () => {
+    event.preventDefault()
+    if (logInBtn.innerHTML !== 'Log In')  {
+            logOut()
+            alert("You have been logged out !")
+        }
+    if (logInBtn.innerHTML === 'Log In'){
+        displayContent(signUpDiv,"animate__fadeInRight","animate__fadeOutRight")
+    }  
+    
+})
+
+
+function displayContent (div,addClass,removeClass) {
+    body.classList.toggle('hide-body')
+    logInDiv.classList.add("log-in-div-show")
+    div.classList.remove("animate__animated",removeClass)
+    div.classList.add("animate__animated",addClass)
+    logInDiv.addEventListener("animationend",appendDiv)
+
+    function appendDiv () {
+        div.style.display="block"
+        this.append(div)
+        this.removeEventListener("animationend",appendDiv)
+    }
+}
+
+
+async function logOut() {
+    try {
+            await fetch('http://127.0.0.1:3000/users/logout',{ method : 'POST'})
+            logInBtn.innerHTML = 'Log In'
+        } catch (err){
+            console.log(err)
+        }
+    }
+
+
+const addToBagBtns = document.querySelectorAll("[data-addbag-btn]")
+addToBagBtns.forEach(btn => {
     btn.addEventListener("click", () => {
         event.preventDefault()
         const parent = btn.parentElement.parentElement
-        const img =     parent.childNodes[1]
+        const img = parent.childNodes[1]
         const imgSrc = img.getAttribute("src")
+        console.log(imgSrc)
         addProduct()
 
         async function addProduct () {
@@ -31,13 +91,10 @@ addToBagBtn.forEach(btn => {
 })
 
 
-
-
-
 async function getProduct() {
     const url = "http://127.0.0.1:3000/products"
 
-    await fetch (url, { method : "GET"})
+    await fetch (url, { method : "GET"}).catch(err =>{console.log(err)})
 }
 
 const deleteBtn = document.querySelector('[data-a2]')
@@ -47,173 +104,16 @@ async function deleteProduct() {
     const url = "http://127.0.0.1:3000/products/delete"
     const response = await fetch (url,{
         method : 'DELETE'
-    })
+    }).catch(err => {console.log(err)})
     console.log(response.status)
     
 }
-
-/* ===================================================
-    INTERSECTION OBSERVERS
-   =================================================== */
-   function createObserverAndAnimate (obj ,classname) {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if(entry.isIntersecting){
-                obj.classList.add("animate__animated", classname)
-            } else {
-                obj.classList.remove("animate__animated", classname)
-            }
-        })
-    })
-            observer.observe(obj);
-} 
-
-
-const navbar = document.querySelector('.nav')
-const divCollection = document.querySelector('.collection-content')
-
-const options = {
-    rootMargin : "-100px 0px 0px 0px"
-}
-
-
-    const divCollectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if(!entry.isIntersecting){
-               navbar.style.backgroundColor = "#333"
-            } else {
-                navbar.style.backgroundColor = "transparent"
-            }
-        })
-    }  ,options )
-
-    divCollectionObserver.observe(divCollection)
-
-
-//PRESENTATION-PARAGRAPH
-const PresentationP = document.querySelector('[data-p]')
-createObserverAndAnimate(PresentationP,"animate__zoomIn")
-
-//PRESENTATION TITLE-DIV
-const divShowcaseTitleh4 = document.querySelector('[data-h1]')
-createObserverAndAnimate(divShowcaseTitleh4,"animate__fadeInDown")
-
-//SHOWCASE-TITLE DIV
-const showcaseTitleh4 = document.querySelector('[data-showcaseh1]')
-createObserverAndAnimate(showcaseTitleh4,"animate__rotateInUpLeft")
-
-
-//CITIES TITLE
-const citiesTitleH4 = document.querySelector('[data-cities-h1]')
-createObserverAndAnimate(citiesTitleH4,"animate__slideInLeft")
-
-//REVIEWS TITLE
-const reviewsTitleh1 = document.querySelector('[data-reviews-title-h1]')
-createObserverAndAnimate(reviewsTitleh1,"animate__lightSpeedInRight")
-
-//REVIEWS COMMENTS
-const comments = document.querySelectorAll(".person")
-comments.forEach(comment => {
-    createObserverAndAnimate(comment,"animate__rotateIn")
-})
-
-//TOUGHNESS DIV
-const toughnessH3 = document.querySelector('[data-toughness-h1]')
-createObserverAndAnimate(toughnessH3,"animate__rotateInDownLeft")
-
-const toughnessH1 = document.querySelector('[data-toughness-h3]')
-createObserverAndAnimate(toughnessH1,"animate__slideInLeft")
-
-const toughnessP = document.querySelector('[data-toughness-p]')
-createObserverAndAnimate(toughnessP,"animate__slideInRight")
-
-const beingTestedP = document.querySelector('[data-being-tested-p]')
-createObserverAndAnimate(beingTestedP,"animate__lightSpeedInLeft")
-
-const beingCreatedP = document.querySelector('[data-being-created-p]')
-createObserverAndAnimate(beingCreatedP,"animate__lightSpeedInRight")
-
-const finalWords = document.querySelector('[data-final-words]')
-
-const testedTitle = document.querySelector('[data-tested-title]')
-createObserverAndAnimate(testedTitle,"animate__flip") 
-
-const finalTitle = document.querySelector('[data-final-title]')
-createObserverAndAnimate(finalTitle,"animate__heartBeat")
-
-const h3 = document.querySelector("[data-h3]")
-createObserverAndAnimate(h3,"animate__jackInTheBox")
-
-/* ===================================================
-   EVENT LISTENERS FOR BUTTONS
-   =================================================== */
-    const body      = document.querySelector('[data-body]')
-    const logInDiv  = document.querySelector('[data-log-in-div]')
-    const signUpDiv = document.querySelector('[data-sign-up]')
-    const logInBtn  = document.getElementById(`logInBtn`)
-
-    logInBtn.addEventListener('click', () => {
-        event.preventDefault()
-        if (logInBtn.innerHTML !== 'Log In')  {
-                logOut()
-                alert("You have been logged out !")
-            }
-        if (logInBtn.innerHTML === 'Log In'){
-            displayContent(signUpDiv,"animate__fadeInRight","animate__fadeOutRight")
-        }  
-        
-    })
-
-    
-    async function logOut() {
-        try {
-                await fetch('http://127.0.0.1:3000/users/logout',{ method : 'POST'})
-                logInBtn.innerHTML = 'Log In'
-            } catch (err){
-                console.log(err)
-            }
-        }
-
-    
-    function displayContent (div,addClass,removeClass) {
-        body.classList.toggle('hide-body')
-        logInDiv.classList.add("log-in-div-show")
-        div.classList.remove("animate__animated",removeClass)
-        div.classList.add("animate__animated",addClass)
-        logInDiv.addEventListener("animationend",appendDiv)
-
-        function appendDiv () {
-            div.style.display="block"
-            this.append(div)
-            this.removeEventListener("animationend",appendDiv)
-        }
-    }
-
-
-    async function checkIfUserIsAuthenticated () {                          
-        const url = "http://127.0.0.1:3000/users/login/authenticated"
-        const response = await fetch(url, {method : 'GET'})
-        .catch (err => {console.log(err)})
-        
-        if(response.status === 401){
-            return false;
-        }
-        if (response.status = 201) {
-            return true;	
-        }
-    }
-
-
-
-
-//SEARCH BTN
 const searchBtn = document.querySelector('[data-search-btn]')
 const searchDiv = document.querySelector('[data-search-div]')
 
 searchBtn.addEventListener("click", () =>{
     displayContent(searchDiv,"animate__fadeInLeft","animate__fadeOutLeft")
 })
-
 
 
 //CLOSE LOG-IN BTN
@@ -471,31 +371,126 @@ async function displayCartContent() {
     const url = "http://127.0.0.1:3000/products"
      await fetch (url,{method : "GET"})
     .then(res=>res.json())
-    .then(data => {
+    .then(products => {
         body.classList.toggle('hide-body')
         logInDiv.classList.add("log-in-div-show")
+        const checkOut = document.createElement("div")
+        checkOut.innerHTML = ` 
+        <div class="btns-wrapper">
+            <a href="#" class="btn">Check Out</a>
+            <a href="#" class="btn">Clear Bag</a>
+        </div>
+        `
         const ul = document.createElement("ul")
         ul.classList.add('grid')
-        ul.innerHTML += `
-                     <li class ="grid-item">
-                        <img style="width : 100% ; height : 100%" src = ${data[0].src}>
-                    </li>     
-                     <li class ="grid-item">
-                        <img style="width : 100% ; height : 100%" src = ${data[0].src}>
-                    </li>     
-                     <li class ="grid-item">
-                        <img style="width : 100% ; height : 100%" src = ${data[0].src}>
-                    </li>     
-                     <li class ="grid-item">
-                        <img style="width : 100% ; height : 100%" src = ${data[0].src}>
-                    </li>     
-                     <li class ="grid-item">
-                        <img style="width : 100% ; height : 100%" src = ${data[0].src}>
-                    </li>     
-                        `
+        products.forEach(product => {
+           
+            ul.innerHTML += `
+                         <li class ="grid-item">
+                            <img style="width : 100% ; height : 100%" src = ${product.src}>
+                        </li>`
+                        
+                        
+        })
         logInDiv.append(ul)
-    } /* data[0].src */ ).catch(err => console.log(err))
+        logInDiv.append(checkOut)
+       
+    }).catch(err => console.log(err))
        
          
     
 } 
+
+/* ===================================================
+    INTERSECTION OBSERVERS
+   =================================================== */
+   function createObserverAndAnimate (obj ,classname) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                obj.classList.add("animate__animated", classname)
+            } else {
+                obj.classList.remove("animate__animated", classname)
+            }
+        })
+    })
+            observer.observe(obj);
+} 
+
+
+const navbar = document.querySelector('.nav')
+const divCollection = document.querySelector('.collection-content')
+
+const options = {
+    rootMargin : "-100px 0px 0px 0px"
+}
+
+
+    const divCollectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(!entry.isIntersecting){
+               navbar.style.backgroundColor = "#333"
+            } else {
+                navbar.style.backgroundColor = "transparent"
+            }
+        })
+    }  ,options )
+
+    divCollectionObserver.observe(divCollection)
+
+
+//PRESENTATION-PARAGRAPH
+const PresentationP = document.querySelector('[data-p]')
+createObserverAndAnimate(PresentationP,"animate__zoomIn")
+
+//PRESENTATION TITLE-DIV
+const divShowcaseTitleh4 = document.querySelector('[data-h1]')
+createObserverAndAnimate(divShowcaseTitleh4,"animate__fadeInDown")
+
+//SHOWCASE-TITLE DIV
+const showcaseTitleh4 = document.querySelector('[data-showcaseh1]')
+createObserverAndAnimate(showcaseTitleh4,"animate__rotateInUpLeft")
+
+
+//CITIES TITLE
+const citiesTitleH4 = document.querySelector('[data-cities-h1]')
+createObserverAndAnimate(citiesTitleH4,"animate__slideInLeft")
+
+//REVIEWS TITLE
+const reviewsTitleh1 = document.querySelector('[data-reviews-title-h1]')
+createObserverAndAnimate(reviewsTitleh1,"animate__lightSpeedInRight")
+
+//REVIEWS COMMENTS
+const comments = document.querySelectorAll(".person")
+comments.forEach(comment => {
+    createObserverAndAnimate(comment,"animate__rotateIn")
+})
+
+//TOUGHNESS DIV
+const toughnessH3 = document.querySelector('[data-toughness-h1]')
+createObserverAndAnimate(toughnessH3,"animate__rotateInDownLeft")
+
+const toughnessH1 = document.querySelector('[data-toughness-h3]')
+createObserverAndAnimate(toughnessH1,"animate__slideInLeft")
+
+const toughnessP = document.querySelector('[data-toughness-p]')
+createObserverAndAnimate(toughnessP,"animate__slideInRight")
+
+const beingTestedP = document.querySelector('[data-being-tested-p]')
+createObserverAndAnimate(beingTestedP,"animate__lightSpeedInLeft")
+
+const beingCreatedP = document.querySelector('[data-being-created-p]')
+createObserverAndAnimate(beingCreatedP,"animate__lightSpeedInRight")
+
+const finalWords = document.querySelector('[data-final-words]')
+
+const testedTitle = document.querySelector('[data-tested-title]')
+createObserverAndAnimate(testedTitle,"animate__flip") 
+
+const finalTitle = document.querySelector('[data-final-title]')
+createObserverAndAnimate(finalTitle,"animate__heartBeat")
+
+const h3 = document.querySelector("[data-h3]")
+createObserverAndAnimate(h3,"animate__jackInTheBox")
+
+

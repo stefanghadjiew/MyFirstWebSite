@@ -16,8 +16,6 @@ try {
 }
 
 
-
-
 dotenv.config()
 const router = express.Router()
 
@@ -30,9 +28,9 @@ router.get(AUTHENTICATED_PATH,async (req,res) => {
     try {
         const user = await User.findById(req.MyCookie.userId)
             if (!(user && req.MyCookie)) {
-                res.status(401).send();
+                res.sendStatus(401);
             } else {
-                res.status(200).send();
+                res.sendStatus(200);
             }
         } catch (err){
             console.log(err)
@@ -44,10 +42,10 @@ router.post(LOGIN_PATH,async (req,res) => {
     try {
         const user = await User.findOne({email : req.body.email})
             if (!user || !bcrypt.compareSync(req.body.password,user.password)) {
-                res.status(401).send()
+                res.sendStatus(401);
             } else {
                 req.MyCookie.userId = user._id
-                res.status(201).send()
+                res.sendStatus(201);
             }
     } catch (err) {
         console.log(err)
@@ -61,7 +59,7 @@ router.post(REGISTER_PATH,async (req,res) => {
     let user = new User(req.body)
     try {
         await  user.save((err) => {
-        (err) ? res.status(500).send() : res.status(201).send();
+        (err) ? res.sendStatus(500) : res.sendStatus(201);
     })
     } catch (err){
         console.log(err)
@@ -72,9 +70,8 @@ router.post(REGISTER_PATH,async (req,res) => {
 router.post(LOGOUT_PATH, (req,res) => {
         req.MyCookie.destroy()  
         res.clearCookie(COOKIE_NAME)
-        res.status(401).send() 
+        res.sendStatus(401)
 })
-
 
 
 router.post(PRODUCT_PATH,async (req,res) => {
@@ -85,7 +82,6 @@ router.post(PRODUCT_PATH,async (req,res) => {
             if (bag) {
                 let itemIndex = bag.products.findIndex(p => p.src === src)
                     if(itemIndex > -1) {
-                        console.log(itemIndex)
                         let productItem = bag.products[itemIndex]
                         productItem.quantity += quantity
                     } else {
@@ -103,6 +99,7 @@ router.post(PRODUCT_PATH,async (req,res) => {
 } catch(err) {console.log(err)}
 })
 
+
 router.get(PRODUCT_PATH,async (req,res) =>{
     try {
         const userId = req.MyCookie.userId
@@ -111,13 +108,14 @@ router.get(PRODUCT_PATH,async (req,res) =>{
             res.send(bagRegistered.products)
         } else {
             
-            const userId = User._id 
+            const userId ={_id : "5f2d567139549e0bcc8b328b"}
             const bagNotRegistered = await Bag.findOne(userId)
             res.json(bagNotRegistered.products)
         }
     } catch(err) {console.log(err)} 
        
 })
+
 
 router.delete(DELETE_CART,async (req,res) => {
     try {
@@ -127,5 +125,6 @@ router.delete(DELETE_CART,async (req,res) => {
         res.send(userBag)
     } catch(err) { console.log(err) }
 })
+
 
 export default router;
