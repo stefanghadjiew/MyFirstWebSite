@@ -410,13 +410,11 @@
           align-items: center;
   -webkit-transform: scale(1);
           transform: scale(1);
-  outline-offset: 1vh;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
 }
 
 .grid .grid-item:hover {
-  outline: 20px solid #EE5A24;
   -webkit-transform: scale(0.85);
           transform: scale(0.85);
 }
@@ -444,6 +442,7 @@
 }
 
 .grid p {
+  top: 0;
   opacity: 0;
   position: absolute;
   -webkit-transition: all 0.5s;
@@ -463,7 +462,7 @@
   display: flex;
   width: 100%;
   position: absolute;
-  top: 70%;
+  top: 50%;
   opacity: 0;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
@@ -1012,7 +1011,7 @@ h3 {
   width: 100%;
 }
 
-span {
+#log_in, #register_span {
   text-decoration: underline;
   cursor: pointer;
 }
@@ -1538,6 +1537,13 @@ span {
    0 to 767 px 
    =================================================== */
 @media only screen and (max-width: 767px) {
+  .footer-wrapper > .footer-social-icons > .social > a > {
+    width: 25px;
+    height: 25px;
+  }
+  .final > h3 {
+    font-size: .75rem;
+  }
   .cities {
     display: block;
     margin: 0;
@@ -1738,6 +1744,12 @@ section:nth-child(2n) {
   display: inline-block;
   width: 20vw;
   height: 0.2rem;
+}
+
+@media only screen and (max-width: 767px) {
+  .btn {
+    padding: 0.5vh 0.75vw;
+  }
 }
 
 /*  ===================================================

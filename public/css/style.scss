@@ -87,6 +87,12 @@ section:nth-child(2n) {
 }
 
 
+@media only screen and (max-width:767px) {
+    .btn {
+        padding: 0.5vh 0.75vw;
+    }
+}
+
 /*  ===================================================
     CLASSES AND STYLING FOR JS 
     =================================================== */

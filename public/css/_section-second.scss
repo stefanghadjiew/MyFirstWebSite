@@ -28,13 +28,12 @@
         justify-content: center; 
         align-items: center;
         transform: scale(1);
-        outline-offset: 1vh;
         transition: all 0.5s;
         
         
 
         &:hover {
-            outline:20px solid $primary-color;
+            
             transform: scale(0.85);
             & img {
                 filter: brightness(40%);
@@ -58,6 +57,7 @@
     }
 
     p {
+        top: 0;
         opacity: 0;
         position: absolute;
         transition: all 0.5s;
@@ -72,7 +72,7 @@
         display: flex;
         width: 100%;
         position: absolute;
-        top: 70%;
+        top: 50%;
         opacity: 0;
         transition: all 0.5s;
     }
