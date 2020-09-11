@@ -2,6 +2,16 @@ const logInBtn = document.getElementById(`logInBtn`)
 const body = document.querySelector('[data-body]')
 const logInDiv = document.querySelector('[data-log-in-div]')
 const signUpDiv = document.querySelector('[data-sign-up]')
+const homeBtn = document.querySelector('[data-home-btn]')
+
+homeBtn.addEventListener("click",() => {
+    event.preventDefault()
+    window.scroll({
+        top:0,
+        left:0,
+        behavior:"smooth"
+    })
+})
 
 
 window.addEventListener('DOMContentLoaded', checkIfUserIsAuthenticated)
@@ -149,6 +159,7 @@ const searchBtn = document.querySelector('[data-search-btn]')
 const searchDiv = document.querySelector('[data-search-div]')
 
 searchBtn.addEventListener("click", () => {
+    event.preventDefault()
     displayContent(searchDiv, "animate__fadeInLeft", "animate__fadeOutLeft")
 })
 
@@ -460,6 +471,7 @@ async function displayCartContent() {
             logInDiv.append(homePage)
             const deleteBtn = document.querySelector('[data-a2]')
             deleteBtn.addEventListener('click', () => {
+                event.preventDefault()
                 if (total === 0) {
                     alert("Your Bag is empty")
                 } else {
@@ -477,6 +489,7 @@ async function displayCartContent() {
 
             const checkOutBtn = document.querySelector('[data-a1]')
             checkOutBtn.addEventListener('click', () => {
+                event.preventDefault()
                 if (!total) {
                     alert("Your Bag is empty!")
                     return
@@ -510,6 +523,7 @@ function createBagBody() {
 function removeBagBody() {
     body.classList.toggle('hide-body')
     logInDiv.classList.remove('log-in-div-show')
+    logInDiv.style.backgroundColor = `rgba(0,0,0,0.6)`;
 }
 
 

@@ -14,7 +14,7 @@
         grid-area: icon;
 
         i {
-            font-size: $paragraph-font !important;
+            font-size: 1.5rem;
         }
     }
     
@@ -30,39 +30,22 @@
     .span-facebook:hover {
         color: #1877f2;
         transition: color 0.5s;
-        i {
-            border-radius: 1.875rem;
-            box-shadow: 0 0 24px 0;
-        }
-       
     }
     
     .span-twitter:hover {
         color: #1da1f2;
         transition: color 0.5s;
-        i {
-            border-radius: 1.875rem;
-            box-shadow: 0 0 24px 0;
-        }
     }
     
   
     .span-instagram:hover {
         color: #c32aa3;
         transition: color 0.5s;
-        i {
-            border-radius: 1.875rem;
-            box-shadow: 0 0 24px 0;
-        }
     }
     
     .span-linkedin:hover {
         color: #007bb5;
         transition: color 0.5s;
-        i {
-            border-radius: 1.875rem;
-            box-shadow: 0 0 24px 0;
-        }
     }
     
     

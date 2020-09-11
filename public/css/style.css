@@ -1057,7 +1057,7 @@ h3 {
 }
 
 .footer-social-icons i {
-  font-size: calc(0.5rem + 1* ((100vw - 20rem) / 100)) !important;
+  font-size: 1.5rem;
 }
 
 .social > a {
@@ -1074,22 +1074,10 @@ h3 {
   transition: color 0.5s;
 }
 
-.span-facebook:hover i {
-  border-radius: 1.875rem;
-  -webkit-box-shadow: 0 0 24px 0;
-          box-shadow: 0 0 24px 0;
-}
-
 .span-twitter:hover {
   color: #1da1f2;
   -webkit-transition: color 0.5s;
   transition: color 0.5s;
-}
-
-.span-twitter:hover i {
-  border-radius: 1.875rem;
-  -webkit-box-shadow: 0 0 24px 0;
-          box-shadow: 0 0 24px 0;
 }
 
 .span-instagram:hover {
@@ -1098,22 +1086,10 @@ h3 {
   transition: color 0.5s;
 }
 
-.span-instagram:hover i {
-  border-radius: 1.875rem;
-  -webkit-box-shadow: 0 0 24px 0;
-          box-shadow: 0 0 24px 0;
-}
-
 .span-linkedin:hover {
   color: #007bb5;
   -webkit-transition: color 0.5s;
   transition: color 0.5s;
-}
-
-.span-linkedin:hover i {
-  border-radius: 1.875rem;
-  -webkit-box-shadow: 0 0 24px 0;
-          box-shadow: 0 0 24px 0;
 }
 
 .footer-nav-wrapper {
@@ -1537,9 +1513,9 @@ h3 {
    0 to 767 px 
    =================================================== */
 @media only screen and (max-width: 767px) {
-  .footer-wrapper > .footer-social-icons > .social > a > {
-    width: 25px;
-    height: 25px;
+  .cart-grid {
+    -ms-grid-columns: (24.25%)[4] !important;
+        grid-template-columns: repeat(4, 24.25%) !important;
   }
   .final > h3 {
     font-size: .75rem;
@@ -1624,6 +1600,10 @@ h3 {
    768 to 1200 px 
    =================================================== */
 @media only screen and (min-width: 768px) and (max-width: 1200px) {
+  .cart-grid {
+    -ms-grid-columns: (24.25%)[4] !important;
+        grid-template-columns: repeat(4, 24.25%) !important;
+  }
   .sign-in {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -1772,7 +1752,8 @@ section:nth-child(2n) {
 }
 
 .log-in-div-show {
-  width: 100vw;
+  width: 100%;
+  height: 100%;
   -webkit-animation-name: appearDiv;
           animation-name: appearDiv;
   -webkit-animation-duration: 1s;
