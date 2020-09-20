@@ -5,8 +5,9 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "dev" : "nodemon app.js",
-    "start": "serve -s build"
+    "dev": "nodemon app.js",
+    "start": "serve -s build",
+    "heroku-postbuild": "npm start"
   },
   "author": "Stefan Hadzhiev",
   "license": "ISC",
@@ -15,7 +16,8 @@
     "client-sessions": "^0.8.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mongoose": "^5.9.21"
+    "mongoose": "^5.9.21",
+    "serve": "^11.3.2"
   },
   "devDependencies": {
     "eslint": "^7.5.0",
