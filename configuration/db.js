@@ -11,3 +11,4 @@ export const MONGO_OPTIONS = {
 }
 
 export const MONGO_URI    = `mongodb://${HOST}/${DB}`
+export const MONGO_URI2 = "mongodb+srv://cheffo0o:123smokeweed123@cluster0.qus4z.mongodb.net/MyFirstWebSiteDB?retryWrites=true&w=majority"

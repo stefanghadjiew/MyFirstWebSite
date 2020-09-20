@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import {
     MONGO_URI,
+    MONGO_URI2,
     MONGO_OPTIONS
 } from './configuration/db.js'
 import {
@@ -22,8 +23,7 @@ import {
 } from './configuration/routesConfig.js';
 
 try {
-    mongoose.connect(MONGO_URI, MONGO_OPTIONS);
-
+    mongoose.connect(MONGO_URI || MONGO_URI2, MONGO_OPTIONS);
 } catch (err) {
     console.log(err)
 }
