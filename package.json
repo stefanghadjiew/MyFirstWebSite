@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon app.js",
-    "start": "serve -s build",
-    "heroku-postbuild": "npm start"
+    "start": "nodemon app.js"
   },
   "author": "Stefan Hadzhiev",
   "license": "ISC",
