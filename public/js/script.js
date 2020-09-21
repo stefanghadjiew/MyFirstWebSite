@@ -3,7 +3,7 @@ const body = document.querySelector('[data-body]');
 const logInDiv = document.querySelector('[data-log-in-div]');
 const signUpDiv = document.querySelector('[data-sign-up]');
 const homeBtn = document.querySelector('[data-home-btn]');
-const url = "https://mongodb+srv://cheffo0o:<password>@cluster0.qus4z.mongodb.net/MyFirstWebSiteDb?retryWrites=true&w=majority/api"
+/* const url = "https://mongodb+srv://cheffo0o:<password>@cluster0.qus4z.mongodb.net/MyFirstWebSiteDb?retryWrites=true&w=majority/api" */
 
 homeBtn.addEventListener("click",(e) => {
     e.preventDefault()
@@ -323,7 +323,7 @@ function UserReg(firstName, lastName, email, password) {
 
 formReg.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const register = `${url}/auth/register`
+    const register = `api/auth/register`
     const userInput = new UserReg(firstName, lastName, email, password)
     if (checkPasswordMatch(password, repeatPassword) === true) {
         try {
