@@ -13,6 +13,6 @@ app.use("/api/auth",authenticationRoutes);
 app.use("/api/user/:id/products",isUserAuthenticated,isUserAuthorized,productsRoutes);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
         console.log(`Server listening on port ${PORT}`)
 })

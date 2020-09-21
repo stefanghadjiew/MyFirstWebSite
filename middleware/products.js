@@ -1,6 +1,6 @@
 const db = require("../db");
 
-exports.addProduct = async (req, res) => {
+exports.addProduct = async (req, res,next) => {
     const userId = req.params.id
     const {
         quantity,
@@ -37,11 +37,11 @@ exports.addProduct = async (req, res) => {
             res.send(newCart)
         }
     } catch (err) {
-        console.log(err)
+        return next(err)
     }
 }
 
-exports.getProducts = async (req, res) => {
+exports.getProducts = async (req, res,next) => {
     try {
         const userId = req.params.id
         if (userId) {
@@ -54,13 +54,13 @@ exports.getProducts = async (req, res) => {
          
         }
     } catch (err) {
-        console.log(err)
+        return next(err)
     }
 
 }
 
 
-exports.deleteProducts = async (req, res) => {
+exports.deleteProducts = async (req, res,next) => {
     try {
         const userBag = await db.Bag.findOne({
             userId: req.params.id
@@ -69,6 +69,6 @@ exports.deleteProducts = async (req, res) => {
         await userBag.save()
         res.send(userBag)
     } catch (err) {
-        console.log(err)
+        return next(err)
     }
 }

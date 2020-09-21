@@ -1,9 +1,7 @@
 const db = require("../db");
 const jwt = require("jsonwebtoken");
 
-exports.login = async (req,res,next) => {
 
-}
 
 exports.register = async (req,res,next) => {
     try {
