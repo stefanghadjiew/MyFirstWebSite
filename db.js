@@ -1,6 +1,6 @@
 const mongoose =require( "mongoose");
 
-mongoose.connect("mongodb+srv://cheffo0o:123smokeweed123@cluster0.qus4z.mongodb.net/<dbname>?retryWrites=true&w=majority",{
+mongoose.connect("mongodb+srv://cheffo0o:123smokeweed123@cluster0.qus4z.mongodb.net/MyFirstWebSiteDb?retryWrites=true&w=majority",{
         useNewUrlParser: true ,
         useUnifiedTopology: true , 
         useCreateIndex : true 

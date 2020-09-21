@@ -3,7 +3,7 @@ const body = document.querySelector('[data-body]');
 const logInDiv = document.querySelector('[data-log-in-div]');
 const signUpDiv = document.querySelector('[data-sign-up]');
 const homeBtn = document.querySelector('[data-home-btn]');
-const url = "mongodb+srv://cheffo0o:<password>@cluster0.qus4z.mongodb.net/<dbname>?retryWrites=true&w=majority/api"
+const url = "mongodb+srv://cheffo0o:<password>@cluster0.qus4z.mongodb.net/MyFirstWebSiteDb?retryWrites=true&w=majority/api"
 
 homeBtn.addEventListener("click",(e) => {
     e.preventDefault()
