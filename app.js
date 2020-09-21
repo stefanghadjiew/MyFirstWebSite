@@ -8,7 +8,7 @@ const PORT = 3000;
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static("e:/web-projects/")).get("/", (req,res) => {res.sendFile("e:/web-projects/MyFirstWebSite/index.html")});
+app.use(express.static("e:/web-projects/")).get("/", (req,res) => {res.sendFile("e:/web-projects/MyFirstWebSite/watchengine/index.html")});
 app.use("/api/auth",authenticationRoutes);
 app.use("/api/user/:id/products",isUserAuthenticated,isUserAuthorized,productsRoutes);
 app.use(errorHandler);
