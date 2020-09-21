@@ -27,7 +27,7 @@ async function checkBagProducts() {
     try{
         const userId = localStorage.getItem("userId")
         const token = localStorage.getItem("token")
-        const bagUrl = `${url}/user/${userId}/products`
+        const bagUrl = `/user/${userId}/products`
         const res = await fetch(bagUrl, {
                 method: "GET",
                 headers : {
@@ -101,7 +101,7 @@ addToBagBtns.forEach(btn => {
             addProduct()
             async function addProduct() {
                 try {
-                    const addProductUrl = `${url}/user/${userId}/products` 
+                    const addProductUrl = `/user/${userId}/products` 
                     const product = {
                         quantity: 1,
                         src: imgSrc,
@@ -135,7 +135,7 @@ async function getProduct() {
     try{
         const userId = localStorage.getItem("userId");
         const token = localStorage.getItem("token");
-        const getProductsUrl = `${url}/user/${userId}/products` 
+        const getProductsUrl = `/user/${userId}/products` 
         await fetch(getProductsUrl, {
             method: "GET",
             headers: {
@@ -152,7 +152,7 @@ async function deleteProduct() {
     try {
         const userId = localStorage.getItem("userId");
         const token = localStorage.getItem("token");
-        const deleteProductsUrl = `${url}/user/${userId}/products` 
+        const deleteProductsUrl = `/user/${userId}/products` 
         await fetch(deleteProductsUrl, {
             method: "DELETE",
             headers: {
@@ -323,7 +323,7 @@ function UserReg(firstName, lastName, email, password) {
 
 formReg.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const register = `api/auth/register`
+    const register = `/auth/register`
     const userInput = new UserReg(firstName, lastName, email, password)
     if (checkPasswordMatch(password, repeatPassword) === true) {
         try {
@@ -365,7 +365,7 @@ function UserLog(email, password) {
 
 formLog.addEventListener("submit", async (e) => {
     e.preventDefault()
-    const login = `${url}/auth/login`
+    const login = `/auth/login`
     const userLog = new UserLog(emailLog, passwordLog)
     
         const response = await
@@ -431,7 +431,7 @@ async function displayCartContent() {
         return
     }
     try{
-        const getProducts = `${url}/user/${userId}/products`
+        const getProducts = `/user/${userId}/products`
         const res = await fetch(getProducts, {
             method: "GET",
             headers : {
