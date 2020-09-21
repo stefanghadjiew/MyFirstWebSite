@@ -235,7 +235,7 @@ visitGalleryBtn2.forEach(btn => {
             alert('Please Log In to visit gallery!')
             return
         } else {
-            displayContent(galleryWrapperDiv, "animate__slideInUp", "animate__slideOutDown")
+            displayContent(galleryWrapperDiv2, "animate__slideInUp", "animate__slideOutDown")
         }
     })
 })
