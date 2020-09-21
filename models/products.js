@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose =require('mongoose');
 
 const bagSchema = new mongoose.Schema({
     userId: {
@@ -25,4 +25,4 @@ const bagSchema = new mongoose.Schema({
 
 const Bag = mongoose.model("Bag", bagSchema)
 
-export default Bag;
+module.exports = Bag;

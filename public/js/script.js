@@ -1,11 +1,12 @@
-const logInBtn = document.getElementById(`logInBtn`)
-const body = document.querySelector('[data-body]')
-const logInDiv = document.querySelector('[data-log-in-div]')
-const signUpDiv = document.querySelector('[data-sign-up]')
-const homeBtn = document.querySelector('[data-home-btn]')
+const logInBtn = document.getElementById(`logInBtn`);
+const body = document.querySelector('[data-body]');
+const logInDiv = document.querySelector('[data-log-in-div]');
+const signUpDiv = document.querySelector('[data-sign-up]');
+const homeBtn = document.querySelector('[data-home-btn]');
+const url = "http://localhost:3000/api"
 
-homeBtn.addEventListener("click",() => {
-    event.preventDefault()
+homeBtn.addEventListener("click",(e) => {
+    e.preventDefault()
     window.scroll({
         top:0,
         left:0,
@@ -14,50 +15,46 @@ homeBtn.addEventListener("click",() => {
 })
 
 
-window.addEventListener('DOMContentLoaded', checkIfUserIsAuthenticated)
+window.addEventListener("DOMContentLoaded",checkForUser)
 
-async function checkIfUserIsAuthenticated() {
-    const url = "http://127.0.0.1:3000/users/login/authenticated"
-    const response = await fetch(url, {
-            method: 'GET'
-        })
-        .catch(err => {
-            console.log(err)
-        })
-
-    if (response.status === 401) {
-        logInBtn.innerHTML = "Log In"
-        return false;
-    }
-    if (response.status = 200) {
+function checkForUser() {
+    if(localStorage.getItem("userId") !== null && localStorage.getItem("token") !== null) {
         logInBtn.innerHTML = "Log Out"
-        return true;
     }
 }
-
 
 async function checkBagProducts() {
-    const url = "http://127.0.0.1:3000/products"
-    const products = await fetch(url, {
-        method: "GET"
-    })
-
-    const bagCountDisplay = document.querySelector('[data-bag-span]')
-    let total = 0
-    for (let i = 0; i < products.length; i++) {
-        total += products[i].quantity
+    try{
+        const userId = localStorage.getItem("userId")
+        const token = localStorage.getItem("token")
+        const bagUrl = `${url}/user/${userId}/products`
+        const res = await fetch(bagUrl, {
+                method: "GET",
+                headers : {
+                    Authorization : `Bearer ${token}`
+                }
+            })
+        const products = await res.json();
+        console.log(products)
+        const bagCountDisplay = document.querySelector('[data-bag-span]')
+        let total = 0
+        for (let i = 0; i < products.length; i++) {
+            total += products[i].quantity
+        }
+        bagCountDisplay.innerHTML = `${total} products`
+    } catch(err) {
+        alert(err.message)
     }
-    bagCountDisplay.innerHTML = `${total} products`
-
+  
 }
 
-checkBagProducts();
 
-logInBtn.addEventListener('click', () => {
-    event.preventDefault()
+logInBtn.addEventListener('click', (e) => {
+    e.preventDefault()
     if (logInBtn.innerHTML !== 'Log In') {
         logOut()
         alert("You have been logged out !")
+        removeEventListener("click")
     }
     if (logInBtn.innerHTML === 'Log In') {
         displayContent(signUpDiv, "animate__fadeInRight", "animate__fadeOutRight")
@@ -80,86 +77,100 @@ function displayContent(div, addClass, removeClass) {
     }
 }
 
-
-async function logOut() {
-    try {
-        await fetch('http://127.0.0.1:3000/users/logout', {
-            method: 'POST'
-        })
-        logInBtn.innerHTML = 'Log In'
-    } catch (err) {
-        console.log(err)
-    }
+function logOut() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    logInBtn.innerHTML = "Log In"
 }
 
 
 const addToBagBtns = document.querySelectorAll("[data-addbag-btn]")
 addToBagBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-        event.preventDefault()
-        const parent = btn.parentElement.parentElement
-        const img = parent.childNodes[1]
-        const imgSrc = img.getAttribute("src")
-        console.log(imgSrc)
-        addProduct()
-
-        async function addProduct() {
-            const url = "http://127.0.0.1:3000/products"
-            const product = {
-                quantity: 1,
-                src: imgSrc,
-                price: 1000
-            }
-
-            await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-type': 'application/json ; charset=utf-8'
-                    },
-                    body: JSON.stringify(product)
-                })
-                .then(res => res.json())
-                .then(products => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault()
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+        if(token === null) {
+            alert("Please log in first")
+            return
+        } else {
+            const parent = btn.parentElement.parentElement
+            const img = parent.childNodes[1]
+            const imgSrc = img.getAttribute("src")
+            console.log(imgSrc)
+            addProduct()
+            async function addProduct() {
+                try {
+                    const addProductUrl = `${url}/user/${userId}/products` 
+                    const product = {
+                        quantity: 1,
+                        src: imgSrc,
+                        price: 1000
+                    }
+                    const res = await fetch(addProductUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json ; charset=utf-8',
+                            Authorization : `Bearer ${token}`
+                        },
+                        body: JSON.stringify(product)
+                    })
+                    const products = await res.json()
                     const bagCountDisplay = document.querySelector('[data-bag-span]')
                     let total = 0;
                     for (let i = 0; i < products.products.length; i++) {
                         total += products.products[i].quantity
                     }
                     bagCountDisplay.innerHTML = `${total} products`
-                })
-                .catch(err => console.error(err))
+                } catch(err) {
+                    alert(err.messsage)
+                }
+            }
         }
-
     })
 })
-
+            
 
 async function getProduct() {
-    const url = "http://127.0.0.1:3000/products"
-
-    await fetch(url, {
-        method: "GET"
-    }).catch(err => {
-        console.log(err)
-    })
+    try{
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+        const getProductsUrl = `${url}/user/${userId}/products` 
+        await fetch(getProductsUrl, {
+            method: "GET",
+            headers: {
+                Authorization : `Bearer ${token}`
+            }
+        })
+    } catch(err) {
+        alert(err.message)
+    }
 }
 
 
 async function deleteProduct() {
-    const url = "http://127.0.0.1:3000/products/delete"
-    const response = await fetch(url, {
-        method: 'DELETE'
-    }).catch(err => {
-        console.log(err)
-    })
-    console.log(response.status)
-
+    try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+        const deleteProductsUrl = `${url}/user/${userId}/products` 
+        await fetch(deleteProductsUrl, {
+            method: "DELETE",
+            headers: {
+                Authorization : `Bearer ${token}`
+            }
+        })
+    } catch(err) {
+        alert(err.message)
+    }
+    
 }
+
+
 const searchBtn = document.querySelector('[data-search-btn]')
 const searchDiv = document.querySelector('[data-search-div]')
 
-searchBtn.addEventListener("click", () => {
-    event.preventDefault()
+searchBtn.addEventListener("click", (e) => {
+    e.preventDefault()
     displayContent(searchDiv, "animate__fadeInLeft", "animate__fadeOutLeft")
 })
 
@@ -168,8 +179,8 @@ searchBtn.addEventListener("click", () => {
 const closeBtnSignUp = document.querySelector('[data-close-btn-sign-up]')
 
 function close(btn, div, addClass, removeClass) {
-    btn.addEventListener("click", () => {
-        event.preventDefault()
+    btn.addEventListener("click", (e) => {
+        e.preventDefault()
         body.classList.toggle("hide-body")
         div.classList.remove("animate__animated", removeClass)
         div.classList.add("animate__animated", addClass)
@@ -199,18 +210,18 @@ const visitGalleryBtn = document.querySelectorAll("[data-visit-gallery-btn]")
 const galleryWrapperDiv = document.querySelector('[data-gallery-wrapper-div]')
 
 visitGalleryBtn.forEach(btn => {
-    btn.addEventListener("click", () => {
-        event.preventDefault()
-        checkIfUserIsAuthenticated().then(res => {
-            if (res === true) {
-                displayContent(galleryWrapperDiv, "animate__slideInUp", "animate__slideOutDown")
-            } else {
-                alert('Please Log In to visit gallery!')
-                return
-            }
-        })
+    btn.addEventListener("click", (e) => {
+        e.preventDefault()
+        const token = localStorage.getItem("token")
+        if(!token) {
+            alert('Please Log In to visit gallery!')
+            return
+        } else {
+            displayContent(galleryWrapperDiv, "animate__slideInUp", "animate__slideOutDown")
+        }
     })
 })
+
 
 // VISIT WOMEN GALLERY  -  BTN/FOOTER
 const visitGalleryBtn2 = document.querySelectorAll("[data-visit-gallery-btn-2]")
@@ -219,18 +230,17 @@ const galleryWrapperDiv2 = document.querySelector('[data-gallery-wrapper-div-wom
 visitGalleryBtn2.forEach(btn => {
     btn.addEventListener("click", (e) => {
         e.preventDefault();
-        checkIfUserIsAuthenticated().then(res => {
-            if (res === true) {
-                displayContent(galleryWrapperDiv2, "animate__slideInUp", "animate__slideOutDown")
-            } else {
-                alert('Please Log In to visit gallery!')
-                return
-            }
-        })
-
+        const token = localStorage.getItem("token")
+        if(!token) {
+            alert('Please Log In to visit gallery!')
+            return
+        } else {
+            displayContent(galleryWrapperDiv, "animate__slideInUp", "animate__slideOutDown")
+        }
     })
-
 })
+
+
 
 //VISI ABOUT US 
 const aboutUsLi = document.querySelector('[data-about-us-li]')
@@ -313,33 +323,29 @@ function UserReg(firstName, lastName, email, password) {
 
 formReg.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const url = "http://127.0.0.1:3000/users/register"
+    const register = `${url}/auth/register`
     const userInput = new UserReg(firstName, lastName, email, password)
     if (checkPasswordMatch(password, repeatPassword) === true) {
-        const response = await
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify(userInput),
-        }).catch(err => {
-            console.log(err)
-        })
-
-        if (response.status === 500) {
-            alert("email is already in use");
-        }
-        if (response.status === 201) {
-            alert("Registration succesful!")
-            swapRegisterLog();
+        try {
+            const response = await
+            fetch(register, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify(userInput)
+            })
+            const userInfo = await response.json()
+           
+            swapLogRegister();
+        } catch(err) {
+           alert(err.message);
         }
         firstName.value = '';
         lastName.value = '';
         email.value = '';
         password.value = '';
         repeatPassword.value = '';
-
     } else {
         return
     }
@@ -354,36 +360,34 @@ const passwordLog = document.getElementById('password_log')
 
 function UserLog(email, password) {
     this.email = email.value,
-        this.password = password.value
+    this.password = password.value
 }
 
 formLog.addEventListener("submit", async (e) => {
     e.preventDefault()
-    const url = "http://127.0.0.1:3000/"
+    const login = `${url}/auth/login`
     const userLog = new UserLog(emailLog, passwordLog)
-    const response = await
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json; charset=utf-8'
-        },
-        body: JSON.stringify(userLog),
-    }).catch(err => {
-        console.log(err)
-    })
-    if (response.status === 401) {
-        alert("User doesent exist!Please register!")
-        swapLogRegister();
-    }
-
-    if (response.status === 201) {
-        const changeLoginToLogOut = document.getElementById(`logInBtn`)
-        changeLoginToLogOut.innerHTML = "Log Out"
-        closeClose(signUpDiv, "animate__fadeOutRight", "animate__fadeInRight")
-    }
-
-    emailLog.value = '';
-    passwordLog.value = '';
+    
+        const response = await
+        fetch(login, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json; charset=utf-8'
+            },
+            body: JSON.stringify(userLog),
+        })
+        const userInfo=await response.json()
+        if(userInfo.err) {
+            alert(userInfo.err.message);
+            swapLogRegister();
+        } else {
+            localStorage.setItem("token",userInfo.token);
+            localStorage.setItem("userId",userInfo.id);
+            logInBtn.innerHTML = "Log Out"
+            closeClose(signUpDiv, "animate__fadeOutRight", "animate__fadeInRight")
+        }
+        emailLog.value = '';
+        passwordLog.value = '';
 })
 
 
@@ -414,103 +418,109 @@ function checkPasswordMatch(password, repeatPassword) {
 
 
 const cartBtn = document.querySelector('[data-cart-btn]')
-cartBtn.addEventListener('click', () => {
-    event.preventDefault()
+cartBtn.addEventListener('click', (e) => {
+    e.preventDefault()
     displayCartContent()
 })
 
 async function displayCartContent() {
-    const url = "http://127.0.0.1:3000/products"
-    await fetch(url, {
-            method: "GET"
-        })
-        .then(res => res.json())
-        .then(products => {
-            createBagBody()
-            const checkOut = document.createElement("div")
-            checkOut.classList.add("btns-wrapper")
-            checkOut.style.paddingTop = "5vh";
-            checkOut.style.paddingBottom = "5vh";
-            checkOut.style.background = "white";
-            checkOut.innerHTML = ` 
-            	<a href="#" class="btn" data-a1>Check Out</a>
-                <a href="#" class="btn" data-a2>Clear Bag</a>
-        
-        `
-            const divUlwrap = document.createElement("div")
-            divUlwrap.style.margin = '5vh 5vw';
-            const ul = document.createElement("ul")
-            ul.classList.add('cart-grid')
-            products.forEach(product => {
-                const price = product.price * product.quantity
-                ul.innerHTML += `
-                         <li class ="grid-item">
-                            <img style="width : 100% ; height : 100px" src = ${product.src}>
-                            <p>Quantity : ${product.quantity}</p>
-                            <p>Price : ${price}$
-                        </li>
-                        `
-            })
-            let total = 0;
-            for (let i = 0; i < products.length; i++) {
-                total += products[i].price * products[i].quantity
+    const userId = localStorage.getItem("userId")
+    const token = localStorage.getItem("token")
+    if(!token && !userId) {
+        alert("Please Log In first!")
+        return
+    }
+    try{
+        const getProducts = `${url}/user/${userId}/products`
+        const res = await fetch(getProducts, {
+            method: "GET",
+            headers : {
+                Authorization : `Bearer ${token}`
             }
-            const totalPrice = document.createElement("p")
-            totalPrice.innerHTML = `TOTAL PRICE : ${total}$`
-            totalPrice.style.marginTop = "5vh"
-            divUlwrap.append(ul)
-            divUlwrap.append(totalPrice)
-            const homePage = document.createElement("div")
-            homePage.classList.add("home-page")
-            homePage.innerHTML = `
-        <a href="" data-home-page-4><i class="backward icon"></i><span class="black">Home</span><span class="orange">Page</span></a>
-        `
-            homePage.style.paddingTop = "3vh"
-            logInDiv.append(checkOut)
-            logInDiv.append(divUlwrap)
-            logInDiv.append(homePage)
-            const deleteBtn = document.querySelector('[data-a2]')
-            deleteBtn.addEventListener('click', () => {
-                event.preventDefault()
-                if (total === 0) {
-                    alert("Your Bag is empty")
-                } else {
-                    deleteProduct()
-                    const bagCountDisplay = document.querySelector('[data-bag-span]')
-                    bagCountDisplay.innerHTML = `0 products`
-                    total = 0
-                    totalPrice.innerHTML = `TOTAL PRICE : ${total}$`
-                    ul.remove()
-
-
-                }
-            })
-
-
-            const checkOutBtn = document.querySelector('[data-a1]')
-            checkOutBtn.addEventListener('click', () => {
-                event.preventDefault()
-                if (!total) {
-                    alert("Your Bag is empty!")
-                    return
-                } else {
-                    alert("Thank you for your purchase")
-                }
-            })
-
-
-            const homePageBtn = document.querySelector('[data-home-page-4]')
-            homePageBtn.addEventListener('click', () => {
-                event.preventDefault()
-                removeBagBody()
+        })
+        const products = await res.json()
+        createBagBody()
+        const checkOut = document.createElement("div")
+        checkOut.classList.add("btns-wrapper")
+        checkOut.style.paddingTop = "5vh";
+        checkOut.style.paddingBottom = "5vh";
+        checkOut.style.background = "white";
+        checkOut.innerHTML = ` 
+            <a href="#" class="btn" data-a1>Check Out</a>
+            <a href="#" class="btn" data-a2>Clear Bag</a>
+    
+    `
+        const divUlwrap = document.createElement("div")
+        divUlwrap.style.margin = '5vh 5vw';
+        const ul = document.createElement("ul")
+        ul.classList.add('cart-grid')
+        products.forEach(product => {
+            const price = product.price * product.quantity
+            ul.innerHTML += `
+                        <li class ="grid-item">
+                        <img style="width : 100% ; height : 100px" src = ${product.src}>
+                        <p>Quantity : ${product.quantity}</p>
+                        <p>Price : ${price}$
+                    </li>
+                    `
+        })
+        let total = 0;
+        for (let i = 0; i < products.length; i++) {
+            total += products[i].price * products[i].quantity
+        }
+        const totalPrice = document.createElement("p")
+        totalPrice.innerHTML = `TOTAL PRICE : ${total}$`
+        totalPrice.style.marginTop = "5vh"
+        divUlwrap.append(ul)
+        divUlwrap.append(totalPrice)
+        const homePage = document.createElement("div")
+        homePage.classList.add("home-page")
+        homePage.innerHTML = `
+    <a href="" data-home-page-4><i class="backward icon"></i><span class="black">Home</span><span class="orange">Page</span></a>
+    `
+        homePage.style.paddingTop = "3vh"
+        logInDiv.append(checkOut)
+        logInDiv.append(divUlwrap)
+        logInDiv.append(homePage)
+        const deleteBtn = document.querySelector('[data-a2]')
+        deleteBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            if (total === 0) {
+                alert("Your Bag is empty")
+            } else {
+                deleteProduct()
+                const bagCountDisplay = document.querySelector('[data-bag-span]')
+                bagCountDisplay.innerHTML = `0 products`
+                total = 0
+                totalPrice.innerHTML = `TOTAL PRICE : ${total}$`
                 ul.remove()
-                totalPrice.remove()
-                divUlwrap.remove()
-                checkOut.remove()
-                homePage.remove()
-            })
+            }
+        })
 
-        }).catch(err => console.log(err))
+
+        const checkOutBtn = document.querySelector('[data-a1]')
+        checkOutBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            if (!total) {
+                alert("Your Bag is empty!")
+                return
+            } else {
+                alert("Thank you for your purchase")
+            }
+        })
+        const homePageBtn = document.querySelector('[data-home-page-4]')
+        homePageBtn.addEventListener('click', (e) => {
+            e.preventDefault()
+            removeBagBody()
+            ul.remove()
+            totalPrice.remove()
+            divUlwrap.remove()
+            checkOut.remove()
+            homePage.remove()
+        })
+    } catch(err) {
+        alert(err.message)
+    }
 }
 
 
@@ -527,9 +537,7 @@ function removeBagBody() {
 }
 
 
-function displayBagProductsCount() {
 
-}
 
 /* ===================================================
     INTERSECTION OBSERVERS
